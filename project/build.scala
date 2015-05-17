@@ -10,7 +10,7 @@ object AlexandriaBuild extends Build {
   val Name = "alexandria"
   val Version = "0.0.1"
   val ScalaVersion = "2.11.6"
-  val ScalatraVersion = "maven(org.scalatra, scalatra_2.11)"
+  val ScalatraVersion = "2.4.0.RC1"
   val SlickVersion = "3.0.0"
 
   lazy val project = Project (
