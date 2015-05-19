@@ -4,28 +4,17 @@ package model
 import scala.util.Sorting
 import java.util.Date
 
-case class Author(
-  firstName: String,
-  lastName: String,
-  middleName: String)
-
-object FirstNameOrdering extends Ordering[Author] {
-  def compare(a: Author, b: Author) = a.firstName compare b.firstName
-}
-
-object LastNameOrdering extends Ordering[Author] {
-  def compare(a: Author, b: Author) = a.firstName compare b.firstName
-}
 
 case class Book(
   isbn: ISBN, // ISBNs are unique identifiers for a book in the database
   title: String,
   subtitle: Option[String],
-  authors: Seq[Author],
+  authors: Seq[Person],
   pages: Int,
   deweys: Seq[Float],
   published: Date,
-  checkedOut: Bool // todo: check out to a person
+  checkedOut: Bool, // todo: check out to a person
+  weight: Float
   ) {
   def checkOut: Book = Book(isbn, title, subtitle, authors, pages, deweys, true)
   def checkIn: Book = Book(isbn, title, subtitle, authors, pages, deweys, false)
