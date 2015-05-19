@@ -13,13 +13,13 @@ case class Book(
   pages: Int,
   deweys: Seq[Float],
   published: Date,
-  checkedOut: Bool, // todo: check out to a person
+  checkedOut: Boolean, // todo: check out to a person
   weight: Float
   ) {
   def checkOut: Book = Book(isbn, title, subtitle, authors, pages, deweys, true)
   def checkIn: Book = Book(isbn, title, subtitle, authors, pages, deweys, false)
 
-  lazy val mungedTitle = if (title.beginsWith("The")) {
+  lazy val mungedTitle = if (title startsWith "The") {
     title stripPrefix("The") + ", The" }
     else title
 }
@@ -27,7 +27,7 @@ case class Book(
 object TitleOrdering extends Ordering[Book] {
   def compare(a: Book, b: Book) = a.mungedTitle compare b.mungedTitle
 }
-
+/* // TODO finish
 object PublicationOrdering extends Ordering[Book] {
   def compare(a: Book, b: Book) = a.published compare b.published
-}
+}*/
