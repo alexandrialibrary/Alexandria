@@ -1,3 +1,8 @@
+package me.hawkweisman.alexandria
+package model
+
+import scala.util.Sorting
+
 case class Person(
   firstName: String,
   lastName: String,
