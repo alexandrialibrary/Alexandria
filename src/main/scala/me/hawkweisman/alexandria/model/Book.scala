@@ -16,8 +16,8 @@ case class Book(
   checkedOut: Boolean, // todo: check out to a person
   weight: Float
   ) {
-  def checkOut: Book = Book(isbn, title, subtitle, authors, pages, deweys, true)
-  def checkIn: Book = Book(isbn, title, subtitle, authors, pages, deweys, false)
+  def checkOut: Book  = this.copy(checkedOut = true)
+  def checkIn: Book   = this.copy(checkedOut = false)
 
   lazy val mungedTitle = if (title startsWith "The") {
     title stripPrefix("The") + ", The" }
