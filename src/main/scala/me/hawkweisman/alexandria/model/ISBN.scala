@@ -34,7 +34,7 @@ object ISBN {
                 """([0-9])""" +               // Capture group 4: Check digit.
                 """$""").r
 
-  val ISBN10 = ("""^(?:ISBN(?:-10)?:?\ )?"""  // Optional ISBN/ISBN-10 identifier.
+  val ISBN10 = ("""^(?:ISBN(?:-10)?:?\ )?""" +// Optional ISBN/ISBN-10 identifier.
                 """(?=""" +                   // Basic format pre-checks:
                 """[0-9X]{10}$""" +           // - must be 10 digits/Xs (no separators).
                 """|""" +                     //  OR
