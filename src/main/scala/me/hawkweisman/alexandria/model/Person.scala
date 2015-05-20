@@ -28,6 +28,5 @@ case class User(
   firstName: String,
   middleName: String,
   lastName: String,
-  username: String,
-  hash: String
+  username: String
   ) extends Person
