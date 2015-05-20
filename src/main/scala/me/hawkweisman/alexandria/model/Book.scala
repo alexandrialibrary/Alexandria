@@ -13,11 +13,17 @@ case class Book(
   pages: Int,
   deweys: Seq[Float],
   published: Date,
-  checkedOut: Boolean, // todo: check out to a person
+  checkedOutBy: Option[User],
   weight: Float
   ) {
-  def checkOut: Book  = this.copy(checkedOut = true)
-  def checkIn: Book   = this.copy(checkedOut = false)
+
+  def checkOut(who: User): Book = this.copy(checkedOutBy = Some(who))
+  def checkIn: Book             = this.copy(checkedOutBy = None)
+
+  /**
+   * @return true if this book is checked out, false if it is not
+   */
+  def isCheckedOut: Boolean = checkedOutBy isDefined
 
   lazy val mungedTitle = if (title startsWith "The") {
     title stripPrefix("The") + ", The" }
