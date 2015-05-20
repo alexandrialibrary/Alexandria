@@ -3,7 +3,12 @@ package model
 
 import scala.util.{ Try, Success, Failure }
 
-case class ISBN(self: Long) {
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+
+import me.hawkweisman.util.collection.RepeatableSeq
+
+case class ISBN(self: String) {
   /**
    * Format the ISBN as a [[String]] suitable for printing
    * @return the ISBN formatted as a [[String]]
@@ -15,7 +20,19 @@ case class ISBN(self: Long) {
    * Book metadata comes from the Google Books API.
    * @return [[Success]] containing a [[Book]] if a book was found for this ISBN,
    */
-  def lookup: Try[Book] = ???
+  def lookup: Try[Book] = {
+    val query = s"https://openlibrary.org/api/books?bibkeys=${format}&jscmd=data&format=json"
+  }
+
+  /**
+   * Calculate the check value for an ISBN-13 number
+   * @return
+   */
+  def isbn13CheckValue: Int = self
+    .zip( Seq(1,3).repeat )
+    .foldLeft[Int]{0}{
+    case (sum: Int, (digit: Char, coeff: Int)) => sum + digit.asDigit + coeff
+  } % 10
 
 }
 object ISBN {
@@ -52,9 +69,17 @@ object ISBN {
    * @return Either a [[Success]] containing an ISBN or a [[Failure]] if the string could not be parsed.
    */
   def parse(str: String): Try[ISBN] = str match {
-    case isbn13(group,publisher,title,check) => ???
-    case isbn10(group,publisher,title,check) => ???
+    case isbn13(group,pub,title,check) => {
+      val isbn = ISBN(s"$group$pub$title")
+      isbn.isbn13CheckValue match {
+        case n if n == check.toInt => Success(isbn)
+        case n => Failure(new NumberFormatException(
+          s"Invalid ISBN-13 check value: expected ${check.toInt}, got $n"))
+      }
+    }
+    case isbn10(group,pub,title,check) => ???
     case _ => Failure(new NumberFormatException(s"$str was not a valid ISBN number"))
   }
+
 
 }
