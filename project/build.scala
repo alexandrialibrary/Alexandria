@@ -6,33 +6,33 @@ import com.mojolly.scalate.ScalatePlugin._
 import ScalateKeys._
 
 object AlexandriaBuild extends Build {
-  val Organization = "me.hawkweisman"
-  val Name = "alexandria"
-  val Version = "0.0.1"
-  val ScalaVersion = "2.11.6"
-  val ScalatraVersion = "2.4.0.RC1"
-  val SlickVersion = "3.0.0"
+  val projOrganization = "me.hawkweisman"
+  val projName = "alexandria"
+  val projVersion = "0.0.1"
+  val projScalaVersion = "2.11.6"
+  val scalatraVersion = "2.4.0.RC1"
+  val slickVersion = "3.0.0"
 
   lazy val project = Project (
     "alexandria",
     file("."),
     settings = ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
-      organization := Organization,
-      name := Name,
-      version := Version,
-      scalaVersion := ScalaVersion,
+      organization := projOrganization,
+      name := projName,
+      version := projVersion,
+      scalaVersion := projScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
       libraryDependencies ++= Seq(
-        "org.scalatra"                  %%  "scalatra"              % ScalatraVersion,
-        "org.scalatra"                  %%  "scalatra-scalate"      % ScalatraVersion,
-        "org.scalatra"                  %%  "scalatra-scalatest"    % ScalatraVersion % "test",
-        "org.scalatra"                  %%  "scalatra-json"         % ScalatraVersion,
-        "org.scalatra"                  %%  "scalatra-auth"         % ScalatraVersion,
+        "org.scalatra"                  %%  "scalatra"              % scalatraVersion,
+        "org.scalatra"                  %%  "scalatra-scalate"      % scalatraVersion,
+        "org.scalatra"                  %%  "scalatra-scalatest"    % scalatraVersion % "test",
+        "org.scalatra"                  %%  "scalatra-json"         % scalatraVersion,
+        "org.scalatra"                  %%  "scalatra-auth"         % scalatraVersion,
         "org.scalacheck"                %%  "scalacheck"            % "1.12.2"  % "test",
         "org.scalatest"                 %%  "scalatest"             % "2.2.4"   % "test",
         "org.json4s"                    %%  "json4s-jackson"        % "3.2.11",
-        "com.typesafe.slick"            %%  "slick"                 % SlickVersion,
+        "com.typesafe.slick"            %%  "slick"                 % slickVersion,
         "com.typesafe.scala-logging"    %%  "scala-logging"         % "3.1.0",
         "com.h2database"                %   "h2"                    % "1.3.166",
         "c3p0"                          %   "c3p0"                  % "0.9.1.2",
