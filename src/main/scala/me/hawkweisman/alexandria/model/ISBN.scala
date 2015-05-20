@@ -3,32 +3,45 @@ package model
 
 import scala.util.{ Try, Success, Failure }
 
+import dispatch._, Defaults._
+
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
 import me.hawkweisman.util.collection.RepeatableSeq
 
-case class ISBN(self: String) {
+case class ISBN(group: String,pub: String,title: String) {
+
+  def query = host("openlibrary.org").secure / "api" / "books" <<?
+    Map("jscmd" -> "data", "format" -> "json", "bibkeys" -> s"ISBN:$group$pub$title$isbn13CheckValue")
+
   /**
    * Format the ISBN as a [[String]] suitable for printing
    * @return the ISBN formatted as a [[String]]
    */
-  def format: String = ???
+  lazy val format: String = ???
 
   /**
    * Attempt to look up the book metadata for this ISBN.
    * Book metadata comes from the Google Books API.
    * @return [[Success]] containing a [[Book]] if a book was found for this ISBN,
    */
-  def lookup: Try[Book] = {
-    val query = s"https://openlibrary.org/api/books?bibkeys=${format}&jscmd=data&format=json"
+  lazy val lookup: Future[Book] = Http(query OK as.String) map{
+    (resp) =>
+      val json = parse(resp)
+      // todo: finish parsing
+      /*Book(
+        isbn = this,
+        title = json \ "title",
+        subtitle = None
+        authors
+      )*/???
   }
-
   /**
    * Calculate the check value for an ISBN-13 number
    * @return
    */
-  def isbn13CheckValue: Int = self
+  lazy val isbn13CheckValue: Int = s"$group$pub$title"
     .zip( Seq(1,3).repeat )
     .foldLeft[Int]{0}{
     case (sum: Int, (digit: Char, coeff: Int)) => sum + digit.asDigit + coeff
@@ -70,7 +83,7 @@ object ISBN {
    */
   def parse(str: String): Try[ISBN] = str match {
     case isbn13(group,pub,title,check) => {
-      val isbn = ISBN(s"$group$pub$title")
+      val isbn = ISBN(group, pub, title)
       isbn.isbn13CheckValue match {
         case n if n == check.toInt => Success(isbn)
         case n => Failure(new NumberFormatException(

@@ -33,6 +33,7 @@ object AlexandriaBuild extends Build {
         "org.scalacheck"                %%  "scalacheck"            % "1.12.2"  % "test",
         "org.scalatest"                 %%  "scalatest"             % "2.2.4"   % "test",
         "org.json4s"                    %%  "json4s-jackson"        % "3.2.11",
+        "net.databinder.dispatch"       %% "dispatch-core"          % "0.11.2",
         "me.hawkweisman"                %%  "util"                  % "v0.0.2-1-g885bd92.19",
         "com.typesafe.slick"            %%  "slick"                 % slickVersion,
         "com.typesafe.scala-logging"    %%  "scala-logging"         % "3.1.0",
