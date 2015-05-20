@@ -4,6 +4,9 @@ package model
 import scala.util.Sorting
 import java.util.Date
 
+trait Ownable {
+  def owner: User
+}
 
 case class Book(
   isbn: ISBN, // ISBNs are unique identifiers for a book in the database
