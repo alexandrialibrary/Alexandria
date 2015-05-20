@@ -9,7 +9,7 @@ case class Book(
   isbn: ISBN, // ISBNs are unique identifiers for a book in the database
   title: String,
   subtitle: Option[String],
-  authors: Seq[Person],
+  authors: Seq[Author],
   pages: Int,
   deweys: Seq[Float],
   published: Date,
