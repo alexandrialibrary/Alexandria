@@ -23,6 +23,7 @@ object AlexandriaBuild extends Build {
       scalaVersion := projScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+      resolvers += "Hawk Weisman Bintray Repo" at "https://dl.bintray.com/hawkw/maven",
       libraryDependencies ++= Seq(
         "org.scalatra"                  %%  "scalatra"              % scalatraVersion,
         "org.scalatra"                  %%  "scalatra-scalate"      % scalatraVersion,
@@ -32,6 +33,7 @@ object AlexandriaBuild extends Build {
         "org.scalacheck"                %%  "scalacheck"            % "1.12.2"  % "test",
         "org.scalatest"                 %%  "scalatest"             % "2.2.4"   % "test",
         "org.json4s"                    %%  "json4s-jackson"        % "3.2.11",
+        "me.hawkweisman"                %%  "util"                  % "v0.0.2-1-g885bd92.19",
         "com.typesafe.slick"            %%  "slick"                 % slickVersion,
         "com.typesafe.scala-logging"    %%  "scala-logging"         % "3.1.0",
         "com.h2database"                %   "h2"                    % "1.3.166",
