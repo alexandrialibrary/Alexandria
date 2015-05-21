@@ -5,7 +5,7 @@ import scala.util.Sorting
 
 trait Person {
   def firstName: String
-  def middleName: String
+  def middleName: Option[String]
   def lastName: String
 }
 object FirstNameOrdering extends Ordering[Person] {
@@ -17,16 +17,16 @@ object LastNameOrdering extends Ordering[Person] {
 }
 
 case class Author(
-  id: Integer,
+  id: Int,
   firstName: String,
-  middleName: String,
+  middleName: Option[String],
   lastName: String
   ) extends Person
 
 case class User(
-  id: Integer,
+  id: Int,
   firstName: String,
-  middleName: String,
+  middleName: Option[String],
   lastName: String,
   username: String
   ) extends Person
