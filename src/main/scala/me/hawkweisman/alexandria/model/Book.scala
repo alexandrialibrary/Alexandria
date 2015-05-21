@@ -17,11 +17,12 @@ case class Book(
   deweys: Seq[Float],
   published: Date,
   checkedOutBy: Option[User],
+  due: Option[Date],
   weight: Float
   ) {
 
-  def checkOut(who: User): Book = this.copy(checkedOutBy = Some(who))
-  def checkIn: Book             = this.copy(checkedOutBy = None)
+  def checkOut(one: User, time: Date): Book = this.copy(checkedOutBy = Some(one), due = Some(time))
+  def checkIn: Book                         = this.copy(checkedOutBy = None, due = None )
 
   /**
    * @return true if this book is checked out, false if it is not
