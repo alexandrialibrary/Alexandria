@@ -31,7 +31,7 @@ object Tables {
     def weight = column[Double]("WEIGHT")
     def owner = column[Option[Int]]("OWNER_ID")
 
-    def owner_id = foreignKey("OWNER_FK", owner, users)
+    def owner_id = foreignKey("OWNER_FK", owner, users)(_.id)
 
     def * = (isbn,title,subtitle,publisher,published,pages,weight,owner)
   }
@@ -41,7 +41,7 @@ object Tables {
     def isbn = column[String]("ISBN")
     def until = column[Date]("UNTIL")
 
-    def what = foreignKey("ISBN_FK", isbn, books)
+    def what = foreignKey("ISBN_FK", isbn, books)(_.isbn)
 
     def * = (user,isbn,until)
   }
