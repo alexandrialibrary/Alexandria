@@ -16,9 +16,11 @@ case class Book(
   pages: Int,
   deweys: Seq[Float],
   published: Date,
+  publisher: String,
   checkedOutBy: Option[User],
   due: Option[Date],
-  weight: Float
+  owner: Option[User],
+  weight: Double
   ) {
 
   def checkOut(one: User, time: Date): Book = this.copy(checkedOutBy = Some(one), due = Some(time))
