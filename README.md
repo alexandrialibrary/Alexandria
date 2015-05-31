@@ -10,6 +10,14 @@ Alexandria is intended primarily for managing relatively small libraries, such a
 ### How does it work?
 Alexandria is written in the [Scala](http://www.scala-lang.org) programming language, using the [Scalatra](http://www.scalatra.org) web framework. Web views are themed using [Bootstrap](http://getbootstrap.com), because I'm lazy and bad at design. ISBN lookups are performed using the Google Books API.
 
+### Goals
+
+Alexandria should...
+  + ...be simple and easy to use
+  + ...require minimal configuration to start using
+  + ...allow the user to reconfigure everything if they want to
+  + ...run acceptably on a Raspberry Pi (under low loads)
+
 ## Using Alexandria
 ### Build and Run
 
