@@ -15,6 +15,7 @@ Alexandria is written in the [Scala](http://www.scala-lang.org) programming lang
 Alexandria should...
   + ...be simple and easy to use
   + ...require minimal configuration to start using
+  + ...be as [un-astonishing](http://en.wikipedia.org/wiki/Principle_of_least_astonishment) as possible
   + ...allow the user to reconfigure everything if they want to
   + ...run acceptably on a Raspberry Pi (under low loads)
 
