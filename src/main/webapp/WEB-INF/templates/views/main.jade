@@ -2,13 +2,13 @@
 - attributes("title") = "Alexandria"
 
 div.container
-        div(class="panel panel-default" id="catalogue")
-            div.panel-heading
-                strong Catalogue
-            table.table.table-hover
-                th Title
-                th Author
-                - for( (titlestring, author) <- books)
-                    tr
-                        td=titlestring
-                        td=author
+    div(class="panel panel-default" id="catalogue")
+        div.panel-heading
+            strong Catalogue
+        table.table.table-hover
+            th Title
+            th Author
+            - for( (titlestring, author) <- books)
+                tr
+                    td=titlestring
+                    td=author
