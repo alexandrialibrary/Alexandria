@@ -5,7 +5,13 @@
     xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd"
     >
 
-  <group name="scripts">
-    <js>/coffee/*.coffee</js>
-  </group>
+    <group name="scripts">
+        <js>assets/coffee/*.coffee</js>
+    </group>
+
+    <group name="styles">
+        <css>assets/styles/*.sass</css>
+        <css>assets/styles/*.css</css>
+    </group>
+
 </groups>
