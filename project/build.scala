@@ -6,6 +6,7 @@ import com.mojolly.scalate.ScalatePlugin._
 import ScalateKeys._
 
 object AlexandriaBuild extends Build {
+
   val projOrganization = "me.hawkweisman"
   val projName = "alexandria"
   val projVersion = "0.0.1"
@@ -19,7 +20,6 @@ object AlexandriaBuild extends Build {
     settings = ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
       organization := projOrganization,
       name := projName,
-      version := projVersion,
       scalaVersion := projScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
@@ -58,4 +58,5 @@ object AlexandriaBuild extends Build {
       }
     )
   )
+
 }
