@@ -52,7 +52,7 @@ object Book {
     val pages = (book \ "number_of_pages").extract[Int]
     val deweys = (book \ "classifications" \ "dewey_decimal_class").extract[List[String]]
     val pubDate = (book \ "publish_date").extract[String]
-    val pubBy =  (book \ "publishers").extract[String]
+    val pubBy =  (book \ "publishers" \\ "name" ).extract[String]
     val weight = (book \ "weight").extract[String]
     val subtitle = (book \ "subtitle").toOption flatMap {
       case JString(s) => Some(s)
