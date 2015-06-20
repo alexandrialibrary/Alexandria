@@ -7,3 +7,9 @@ resolvers += "Typesafe Repository" at "https://repo.typesafe.com/typesafe/releas
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
 
 addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.0.3")
+
+resolvers += Resolver.url("sbt-plugin-snapshots",
+  new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots/"))(
+    Resolver.ivyStylePatterns)
+
+addSbtPlugin("com.bowlingx" %% "xsbt-wro4j-plugin" % "0.3.5")
