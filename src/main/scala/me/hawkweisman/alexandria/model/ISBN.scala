@@ -34,11 +34,14 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
    * Calculate the check value for an ISBN-13 number
    * @return
    */
-  lazy val isbn13CheckValue: Int = s"$group$pub$title"
-    .zip( Seq(1,3).repeat )
-    .foldLeft[Int]{0}{
-    case (sum: Int, (digit: Char, coeff: Int)) => sum + digit.asDigit + coeff
-  } % 10
+  lazy val isbn13CheckValue: Int = {
+    val v: Seq[(Char,Int)] = s"${prefix.getOrElse("")}$group$pub$title"
+      .zip(Seq(1,3).repeat)
+    val i: Seq[Int] = for {
+      ((d,c)) <- v
+    } yield { d.asDigit * c }
+    10 - (i.sum % 10)
+  }
 
   override def toString: String = format
 
@@ -52,7 +55,7 @@ object ISBN {
                 """(?=(?:[0-9]+[-\ ]){4})"""+ // - must have 4 separator characters
                 """[-\ 0-9]{17}""" +          // - out of 17 characters total
                 """)""" +                     // End format pre-checks
-                """(97[89][-\ ]?)""" +        // ISBN-13 prefix code
+                """(97[89])[-\ ]?""" +        // ISBN-13 prefix code
                 """([0-9]{1,5})[-\ ]?""" +    // Capture group 1: group ID
                 """([0-9]+)[-\ ]?""" +        // Capture group 2: publisher ID
                 """([0-9]+)[-\ ]?""" +        // Capture group 3: title ID
