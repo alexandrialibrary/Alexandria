@@ -45,21 +45,21 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
 }
 object ISBN {
 
-  val isbn13 = ("""^?:ISBN(?:-13)?:?\ )?""" + // Optional ISBN/ISBN13 identifier
+  val isbn13 = ("""^(?:ISBN(?:-13)?:?\ ?)?""" + // Optional ISBN/ISBN13 identifier
                 """(?=""" +                   // Basic format pre-checks:
                 """[0-9]{13}""" +             // - must be 13 digits
                 """|""" +                     //  OR
                 """(?=(?:[0-9]+[-\ ]){4})"""+ // - must have 4 separator characters
                 """[-\ 0-9]{17}""" +          // - out of 17 characters total
                 """)""" +                     // End format pre-checks
-                """(97[89][-\ ]?)""" +          // ISBN-13 prefix code
+                """(97[89][-\ ]?)""" +        // ISBN-13 prefix code
                 """([0-9]{1,5})[-\ ]?""" +    // Capture group 1: group ID
                 """([0-9]+)[-\ ]?""" +        // Capture group 2: publisher ID
                 """([0-9]+)[-\ ]?""" +        // Capture group 3: title ID
                 """([0-9])""" +               // Capture group 4: Check digit.
                 """$""").r
 
-  val isbn10 = ("""^(?:ISBN(?:-10)?:?\ )?"""+ // Optional ISBN/ISBN-10 identifier.
+  val isbn10 = ("""^(?:ISBN(?:-10)?:?\ ?)?"""+ // Optional ISBN/ISBN-10 identifier.
                 """(?=""" +                   // Basic format pre-checks:
                 """[0-9X]{10}$""" +           // - must be 10 digits/Xs (no separators).
                 """|""" +                     //  OR
