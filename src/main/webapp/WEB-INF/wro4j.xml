@@ -6,12 +6,13 @@
     >
 
     <group name="scripts">
-        <js>assets/coffee/*.coffee</js>
+        <js>/assets/coffee/*.coffee</js>
+        <js>/assets/js/*.js</js>
     </group>
 
     <group name="styles">
-        <css>assets/styles/*.sass</css>
-        <css>assets/styles/*.css</css>
+        <css>/assets/styles/*.sass</css>
+        <css>/assets/styles/*.css</css>
     </group>
 
 </groups>
