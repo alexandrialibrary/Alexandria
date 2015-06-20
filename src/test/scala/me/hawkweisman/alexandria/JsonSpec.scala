@@ -15,6 +15,10 @@ class JsonSpec extends WordSpec with Matchers {
         book.weight shouldEqual "1 grams"
         book.isbn shouldBe isbn
         book.pages shouldEqual 92
+        book.publisher shouldEqual "Litwin Books"
+        book.authors should have length 1
+        book.authors(0).firstName shouldEqual "John"
+        book.authors(0).lastName shouldEqual "Miedema"
       }
     }
   }
