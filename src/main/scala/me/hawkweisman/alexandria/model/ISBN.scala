@@ -17,7 +17,7 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
    * @return the ISBN formatted as a [[String]]
    */
   lazy val format: String = prefix match {
-    case Some(prefix) => s"ISBN:$prefix$group$pub$title"
+    case Some(prefix) => s"ISBN:$prefix$group$pub$title$isbn13CheckValue"
     case None         => s"ISBN:$group$pub$title"
 
   }
