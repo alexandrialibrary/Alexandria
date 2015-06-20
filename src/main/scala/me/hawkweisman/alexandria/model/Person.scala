@@ -17,7 +17,6 @@ object LastNameOrdering extends Ordering[Person] {
 }
 
 case class Author(
-  id: Int,
   firstName: String,
   middleName: Option[String],
   lastName: String
