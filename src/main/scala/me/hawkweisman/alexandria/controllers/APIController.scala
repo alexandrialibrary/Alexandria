@@ -14,11 +14,16 @@ import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
 
 case class APIController(db: Database) extends AlexandriaStack with JacksonJsonSupport {
 
+  // Sets up automatic case class to JSON output serialization
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
+  // Before every action runs, set the content type to be in JSON format.
+  before() {
+    contentType = formats("json")
+  }
 
   get("/book/:isbn") {
-    contentType = formats("json")
+    NotImplemented("This isn't done yet.")
   }
 
 }
