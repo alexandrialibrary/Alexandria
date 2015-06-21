@@ -12,7 +12,7 @@ import scalate.ScalateSupport
 import scala.slick.driver.H2Driver.simple._
 import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
 
-case class AdminController(db: Database) extends AlexandriaStack with JacksonJsonSupport {
+case class AdminController(db: Database) extends AlexandriaStack with NativeJsonSupport {
 
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 

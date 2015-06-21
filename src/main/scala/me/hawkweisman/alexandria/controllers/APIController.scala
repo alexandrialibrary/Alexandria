@@ -16,7 +16,7 @@ import scala.slick.driver.H2Driver.simple._
 import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
 
 case class APIController(db: Database)(implicit val swagger: Swagger) extends AlexandriaStack
-  with JacksonJsonSupport with SwaggerSupport {
+  with NativeJsonSupport with SwaggerSupport {
 
   // Sets up automatic case class to JSON output serialization
   protected implicit lazy val jsonFormats: Formats = DefaultFormats

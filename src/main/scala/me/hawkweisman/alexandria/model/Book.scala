@@ -6,7 +6,7 @@ import scala.util.parsing.json._
 import java.util.Date
 
 import org.json4s._
-import org.json4s.jackson.JsonMethods._
+import org.json4s.native.JsonMethods._
 
 trait Ownable {
   def owner: User
