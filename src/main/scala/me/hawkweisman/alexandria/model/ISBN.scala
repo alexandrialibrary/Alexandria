@@ -9,8 +9,10 @@ import me.hawkweisman.util.collection.RepeatableSeq
 
 case class ISBN(group: String,pub: String,title: String, prefix: Option[String]) {
 
-  def query = host("openlibrary.org").secure / "api" / "books" <<?
-    Map("jscmd" -> "data", "format" -> "json", "bibkeys" -> s"ISBN:$group$pub$title$isbn13CheckValue")
+  def query = host("openlibrary.org").secure / "api" / "books" <<?Map(
+    "jscmd" -> "data",
+    "format" -> "json",
+    "bibkeys" -> format)
 
   /**
    * Format the ISBN as a [[String]] suitable for printing
@@ -18,7 +20,10 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
    */
   lazy val format: String = prefix match {
     case Some(prefix) => s"ISBN:$prefix$group$pub$title$isbn13CheckValue"
-    case None         => s"ISBN:$group$pub$title"
+    case None         => s"ISBN:$group$pub$title" + (isbn10CheckValue match {
+      case 10 => "X"
+      case i  => i.toString
+    })
 
   }
 
@@ -41,6 +46,14 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
       ((d,c)) <- v
     } yield { d.asDigit * c }
     10 - (i.sum % 10)
+  }
+
+  lazy val isbn10CheckValue: Int = {
+    val v: Seq[(Char,Int)] = s"$group$pub$title" zip (10 until 1 by -1)
+    val i: Seq[Int] = for {
+      ((d,c)) <- v
+    } yield { d.asDigit * c }
+    (11 - (i.sum % 11) ) % 11
   }
 
   override def toString: String = format
@@ -80,6 +93,14 @@ object ISBN {
    * @return Either a [[Success]] containing an ISBN or a [[Failure]] if the string could not be parsed.
    */
   def parse(str: String): Try[ISBN] = str match {
+    case isbn10(group,pub,title,check) =>{
+      val isbn = ISBN(group, pub, title, None)
+      isbn.isbn10CheckValue match {
+        case n if n == (if (check == "X") 10 else check.toInt) => Success(isbn)
+        case n => Failure(new NumberFormatException(
+          s"Invalid ISBN-10 check value: expected $check, got $n"))
+      }
+    }
     case isbn13(prefix,group,pub,title,check) => {
       val isbn = ISBN(group, pub, title, Some(prefix))
       isbn.isbn13CheckValue match {
@@ -88,7 +109,6 @@ object ISBN {
           s"Invalid ISBN-13 check value: expected ${check.toInt}, got $n"))
       }
     }
-    case isbn10(group,pub,title,check) => ???
     case _ => Failure(new NumberFormatException(s"$str was not a valid ISBN number"))
   }
 
