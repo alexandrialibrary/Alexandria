@@ -98,6 +98,9 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     ISBN parse params("isbn") match {
       case Success(isbn) =>
         logger debug s"Successfully parsed ISBN $isbn"
+        db withDynTransaction {
+
+        }
         NotImplemented("This isn't done yet.")
       case Failure(why) =>
         logger warn s"Invalid ISBN: ${why.getMessage}\n${why.getStackTrace}"

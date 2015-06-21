@@ -16,6 +16,7 @@ object Tables {
   val users   = TableQuery[Users]
   val authors = TableQuery[Authors]
   val wrote   = TableQuery[Wrote]
+  val deweys  = TableQuery[DeweyDecimals]
 
   // DBIO Action which creates the schema
   val createSchemaAction = (
@@ -25,22 +26,23 @@ object Tables {
   //TODO: AUTH table for password hashes
 
 
-  class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
+  class Books(tag: Tag) extends Table[(String,String,Option[String],Int,String,String,String,Option[Int])](tag, "BOOKS"){
 
     def isbn = column[String]("ISBN", O.PrimaryKey)
     def title = column[String]("TITLE")
     def subtitle = column[Option[String]]("SUBTITLE")
     def publisher = column[String]("PUBLISHER")
-    def published = column[Date]("PUBLISHED")
+    def published = column[String]("PUBLISHED")
     def pages = column[Int]("PAGES")
-    def weight = column[Double]("WEIGHT")
+    def weight = column[String]("WEIGHT")
     def ownerID = column[Option[Int]]("OWNER_ID")
 
     def owner = foreignKey("OWNER_FK", ownerID, users)(_.id)
 
-    def * = (isbn,title,subtitle,authors,publisher,published,pages,loanedTo,loanedUntil,owner,weight ) <> ((Book.apply _).tupled, Book.unapply)
+    def * = (isbn,title,subtitle,pages,publisher,published,weight,ownerID)
 
     def authors = wrote filter (_.bookISBN === isbn) flatMap (_.author)
+    def deweyDecimals = deweys filter (_.isbn === isbn) map (_.dewey)
     def loanedTo = loans filter (_.isbn === isbn) flatMap (_.who)
     def loanedUntil = loans filter (_.isbn === isbn) map (_.until)
   }
@@ -78,6 +80,15 @@ object Tables {
 
     def books = wrote filter (_.authorID === id) flatMap (_.book)
 
+  }
+
+  class DeweyDecimals(tag:Tag) extends Table[(String,String)](tag, "DEWEYS") {
+    def isbn = column[String]("ISBN")
+    def dewey = column[String]("DEWEY")
+
+    def * = (isbn, dewey)
+
+    def book = foreignKey("BOOK", isbn, books)(b => b.isbn)
   }
 
   class Wrote(tag: Tag) extends Table[(Int,String)](tag, "WROTE") {
