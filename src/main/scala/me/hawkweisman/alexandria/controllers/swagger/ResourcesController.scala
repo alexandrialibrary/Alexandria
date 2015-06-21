@@ -18,7 +18,7 @@ object AlexandriaApiInfo extends ApiInfo(
    )
 
 class AlexandriaSwagger extends Swagger(
-  Swagger.SpecVersion,
-  "0.0.1-preview",
-  AlexandriaApiInfo
+  apiInfo         = AlexandriaApiInfo,
+  apiVersion      = "0.0.1-preview",
+  swaggerVersion  = "2.0"
   )
