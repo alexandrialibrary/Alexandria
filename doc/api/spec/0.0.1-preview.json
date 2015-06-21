@@ -1,0 +1,287 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Alexandria is a simple little card catalogue webapp with a terribly pretentious name.",
+        "title": "Alexandria API",
+        "version": "0.0.1-preview",
+        "contact": {
+            "name": "Alexandria API Team",
+            "url": "https://github.com/hawkw/Alexandria"
+        }
+    },
+    "basePath": "/api",
+    "paths": {
+        "/books": {
+            "get": {
+                "description": "Get a list of all books.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "description": "The starting number of the books to retrieve",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0
+                    },
+                    {
+                        "name": "count",
+                        "description": "The number of books to retrieve",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List all books",
+                        "schema": {
+                            "title": "Books",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Book"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new book.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "book",
+                        "in": "body",
+                        "description": "Add book to library",
+                        "required": true,
+                        "schema": {
+                            "title": "Book",
+                            "items": {
+                                "$ref": "#/definitions/Book"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Book added",
+                        "schema": {
+                            "title": "Book",
+                            "items": {
+                                "$ref": "#/definitions/Book"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/book/{isbn}": {
+            "get": {
+                "description": "Get a specific book by ISBN. If the user has book creation priviliges and the ISBN is unrecognized, the book definition is pulled from the Open Library API and stored in the database before returning a book object as normal (but with a different status). If the user doesn't have book creation privilieges and the ISBN is unrecognized, a 404 is returned.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "isbn",
+                        "in": "path",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Book returned",
+                        "schema": {
+                            "title": "Book",
+                            "items": {
+                                "$ref": "#/definitions/Book"
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Book created",
+                        "schema": {
+                            "title": "Book",
+                            "items": {
+                                "$ref": "#/definitions/Book"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specific book by ISBN.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "isbn",
+                        "in": "path",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Book deleted"
+                    }
+                }
+            }
+        },
+        "/authors": {
+            "get": {
+                "description": "Get all authors. Why would you want to do this? I really don't think you want this.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "description": "The starting number of the authors to retrieve",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0
+                    },
+                    {
+                        "name": "count",
+                        "description": "The number of authors to retrieve",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List all authors",
+                        "schema": {
+                            "title": "Author",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Author"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new author.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "author",
+                        "in": "body",
+                        "description": "Add author to database",
+                        "required": true,
+                        "schema": {
+                            "title": "Author",
+                            "items": {
+                                "$ref": "#/definitions/Author"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Author added",
+                        "schema": {
+                            "title": "Author",
+                            "items": {
+                                "$ref": "#/definitions/Author"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/author/{name}": {
+            "get": {
+                "description": "Get a specific author by name.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "The author's name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Author returned",
+                        "schema": {
+                            "title": "Author",
+                            "items": {
+                                "$ref": "#/definitions/Author"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Author not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Book": {
+            "properties": {
+                "isbn": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "authors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "published_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "dewey_decimal": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "subtitle": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "string"
+                }
+            }
+        },
+        "Author": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
