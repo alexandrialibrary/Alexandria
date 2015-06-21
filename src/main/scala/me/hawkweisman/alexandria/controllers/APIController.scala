@@ -97,6 +97,10 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     NotImplemented("This isn't done yet.")
   }
 
+  post("/books", operation(createBook)) {
+    NotImplemented("This isn't done yet.")
+  }
+
 
   // ---- Author API actions -------------------------------------------------
 
@@ -135,5 +139,17 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
         .required
     )
   )
+
+  get("/authors/", operation(listAuthors)) {
+    NotImplemented("This isn't done yet.")
+  }
+
+  post("/authors/", operation(createAuthor)) {
+    NotImplemented("This isn't done yet.")
+  }
+
+  get("/author/:name", operation(getAuthorByName)) {
+    NotImplemented("This isn't done yet.")
+  }
 
 }
