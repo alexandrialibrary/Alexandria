@@ -14,7 +14,7 @@ import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
 
 case class APIController(db: Database) extends AlexandriaStack with JacksonJsonSupport {
 
-  protected implicit val jsonFormats: Formats = DefaultFormats
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
 
   get("/book/:isbn") {

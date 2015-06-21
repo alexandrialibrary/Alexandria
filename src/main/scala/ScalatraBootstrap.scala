@@ -14,13 +14,12 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext) {
     val db = Database.forDataSource(cpds)     // create a Database which uses the DataSource
-    // mount the application
-    context.mount(AppController(db), "/*") // TODO: eventually this won't require DB access
     // mount the admin controller
-    context.mount(AdminController(db), "/admin/*")
+    context mount (AdminController(db), "/admin/*")
     // mount the API controller
-    context.mount(APIController(db), "/api/*")
-    // TODO: mount Swagger controller here too?
+    context mount (APIController(db), "/api/*") // TODO: mount Swagger controller here too?
+    // mount the application
+    context mount (AppController(db), "/*") // TODO: eventually this won't require DB access
   }
 
   private def closeDbConnection() {
