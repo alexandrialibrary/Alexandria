@@ -2,7 +2,8 @@ package me.hawkweisman.alexandria
 package controllers
 
 import model.Tables._
-import model.Book
+
+import responses.Book
 
 import org.scalatra._
 import org.scalatra.json._

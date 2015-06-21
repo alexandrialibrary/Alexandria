@@ -1,6 +1,8 @@
 package me.hawkweisman.alexandria
 package model
 
+import controllers.responses
+
 import scala.util.Sorting
 import scala.util.parsing.json._
 import java.util.Date
@@ -35,9 +37,20 @@ case class Book(
    */
   def isCheckedOut: Boolean = checkedOutBy isDefined
 
-  lazy val mungedTitle = if (title startsWith "The") {
+  protected[model] lazy val mungedTitle = if (title startsWith "The") {
     title stripPrefix("The") + ", The" }
     else title
+
+  def toBookResponse: responses.Book = responses.Book(
+    isbn.toString, title,
+    subtitle getOrElse "",
+    authors map ( _.toString ),
+    deweys,
+    pages,
+    publisher,
+    published,
+    weight
+  )
 }
 
 
