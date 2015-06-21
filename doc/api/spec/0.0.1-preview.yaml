@@ -60,7 +60,7 @@ paths:
               $ref: '#/definitions/Book'
   /book/{isbn}:
     get:
-      description: Get a specific book by ISBN.
+      description: Get a specific book by ISBN. If the user has book creation priviliges and the ISBN is unrecognized, the book definition is pulled from the Open Library API and stored in the database before returning a book object as normal. If the user doesn't have book creation privilieges and the ISBN is unrecognized, a 404 is returned.
       produces:
         - application/json
       parameters:
@@ -74,6 +74,8 @@ paths:
             title: Book
             items:
               $ref: '#/definitions/Book'
+        404:
+          description: Book not found
     delete:
       description: Delete a specific book by ISBN.
       produces:
