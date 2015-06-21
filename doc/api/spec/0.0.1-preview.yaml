@@ -158,7 +158,24 @@ definitions:
         type: string
       title:
         type: string
-      author:
+      authors:
+        type: array
+        items:
+          type: string
+      publisher:
+        type: string
+      published_date:
+        type: string
+        format: date
+      pages:
+        type: integer
+      dewey_decimal:
+        type: array
+        items:
+          type: string
+      subtitle:
+        type: string
+      weight:
         type: string
   Author:
     properties:
