@@ -16,28 +16,28 @@ paths:
         - application/json
       parameters:
         - name: test
-          in: path
+          in: query
+          type: integer
         - name: offset
-          #description: The starting number of the books to retrieve
-          #in: path
-          #required: false
-          #type: integer
-          #default: 0
+          description: The starting number of the books to retrieve
+          in: query
+          required: false
+          type: integer
+          default: 0
         - name: count
-          #description: The number of books to retrieve
-          #in: path
-          #required: false
-          #type: integer
-          #default: 10
+          description: The number of books to retrieve
+          in: query
+          required: false
+          type: integer
+          default: 10
       responses:
         200:
-          description: Test
-          #description: List all books
-          #schema:
-            #title: Books
-            #type: array
-            #item:
-              #$ref: '#/definitions/Book'
+          description: List all books
+          schema:
+            title: Books
+            type: array
+            items:
+              $ref: '#/definitions/Book'
     post:
       description: Create a new book.
       produces:
@@ -45,26 +45,57 @@ paths:
       parameters:
         - name: book
           in: body
-          description: Add book to library.
+          description: Add book to library
           required: true
           schema:
-            $ref: '#/definitions/Book'
+            title: Book
+            items:
+              $ref: '#/definitions/Book'
       responses:
-        '201':
-          description: Book created.
+        201:
+          description: Book created
           schema:
-            $ref: '#/definitions/Book'
+            title: Book
+            items:
+              $ref: '#/definitions/Book'
+  /book/{isbn}:
+    get:
+      description: Get a specific book by ISBN
+      produces:
+        - application/json
+      parameters:
+        - name: isbn
+          in: path
+          type: string
+      responses:
+        200:
+          description: Book returned
+          schema:
+            title: Book
+            items:
+              $ref: '#/definitions/Book'
+    delete:
+      description: Delete a specific book by ISBN
+      produces:
+        - application/json
+      parameters:
+        - name: isbn
+          in: path
+          type: string
+      responses:
+        204:
+          description: Book deleted
         
 
-#definitions:
-#  Book:
-#    properties:
-#      isbn:
-#        type: string
-#      title:
-#        type: string
-#      author:
-#        type: string
-#      test:
-#        type: string
+definitions:
+  Book:
+    properties:
+      isbn:
+        type: string
+      title:
+        type: string
+      author:
+        type: string
+      test:
+        type: string
   
