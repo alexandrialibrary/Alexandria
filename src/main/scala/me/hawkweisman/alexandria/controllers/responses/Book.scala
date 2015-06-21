@@ -7,7 +7,7 @@ case class Book(
   title: String,
   subtitle: String,
   authors: Seq[String],
-  dewey_decimal_numbers: Seq[String],
+  dewey_decimal: Seq[String],
   pages: Int,
   publisher: String,
   published_date: String,
