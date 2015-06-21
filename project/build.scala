@@ -30,6 +30,7 @@ object AlexandriaBuild extends Build {
         "org.scalatra"                  %%  "scalatra-scalatest"    % scalatraVersion % "test",
         "org.scalatra"                  %%  "scalatra-json"         % scalatraVersion,
         "org.scalatra"                  %%  "scalatra-auth"         % scalatraVersion,
+        "org.scalatra"                  %% "scalatra-swagger"       % scalatraVersion,
         "org.scalacheck"                %%  "scalacheck"            % "1.12.2"  % "test",
         "org.scalatest"                 %%  "scalatest"             % "2.2.4"   % "test",
         "org.json4s"                    %%  "json4s-jackson"        % "3.2.11",
