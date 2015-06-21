@@ -60,7 +60,7 @@ paths:
               $ref: '#/definitions/Book'
   /book/{isbn}:
     get:
-      description: Get a specific book by ISBN
+      description: Get a specific book by ISBN.
       produces:
         - application/json
       parameters:
@@ -75,7 +75,7 @@ paths:
             items:
               $ref: '#/definitions/Book'
     delete:
-      description: Delete a specific book by ISBN
+      description: Delete a specific book by ISBN.
       produces:
         - application/json
       parameters:
