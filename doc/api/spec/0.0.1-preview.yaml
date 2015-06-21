@@ -50,7 +50,7 @@ paths:
               $ref: '#/definitions/Book'
       responses:
         201:
-          description: Book created
+          description: Book added
           schema:
             title: Book
             items:
@@ -160,9 +160,6 @@ definitions:
         type: string
       author:
         type: string
-      test:
-        type: string
-  
   Author:
     properties:
       name:
