@@ -25,9 +25,7 @@ object Tables {
   //TODO: AUTH table for password hashes
 
 
-  class Books(tag: Tag) extends Table[
-    (String,String,Option[String],String,Date,Int,Double,Option[Int])
-    ](tag, "BOOKS"){
+  class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
     def isbn = column[String]("ISBN", O.PrimaryKey)
     def title = column[String]("TITLE")
@@ -40,19 +38,22 @@ object Tables {
 
     def owner = foreignKey("OWNER_FK", ownerID, users)(_.id)
 
-    def * = (isbn,title,subtitle,publisher,published,pages,weight,ownerID)
+    def * = (isbn,title,subtitle,authors,publisher,published,pages,loanedTo,loanedUntil,owner,weight ) <> ((Book.apply _).tupled, Book.unapply)
 
-    def authors = wrote filter (_.bookISBN === isbn) flatMap(_.author)
+    def authors = wrote filter (_.bookISBN === isbn) flatMap (_.author)
+    def loanedTo = loans filter (_.isbn === isbn) flatMap (_.who)
+    def loanedUntil = loans filter (_.isbn === isbn) map (_.until)
   }
 
   class Loans(tag: Tag) extends Table[(Int,String,Date)](tag, "LOANS") {
-    def user = column[Int]("USER_ID")
+    def userID = column[Int]("USER_ID")
     def isbn = column[String]("ISBN")
     def until = column[Date]("UNTIL")
 
-    def what = foreignKey("ISBN_FK", isbn, books)(_.isbn)
+    def what = foreignKey("ISBN_FK", isbn, books)(b => b.isbn)
+    def who  = foreignKey("USER_FK", userID, users)(u => u.id)
 
-    def * = (user,isbn,until)
+    def * = (userID,isbn,until)
   }
 
   class Users(tag: Tag) extends Table[User](tag, "USERS") {
