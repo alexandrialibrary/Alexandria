@@ -7,11 +7,15 @@ info:
     name: Alexandria API Team
     url: https://github.com/hawkw/Alexandria
 basePath: /api
+schemes:
+- http
 
 paths:
   /books:
     get:
-      description: Get a list of all books.
+      operationId: listBooks
+      summary: Get a list of all books.
+      description: ""
       produces:
         - application/json
       parameters:
@@ -20,12 +24,14 @@ paths:
           in: query
           required: false
           type: integer
+          format: int32
           default: 0
         - name: count
           description: The number of books to retrieve
           in: query
           required: false
           type: integer
+          format: int32
           default: 10
       responses:
         200:
@@ -36,7 +42,9 @@ paths:
             items:
               $ref: '#/definitions/Book'
     post:
-      description: Create a new book.
+      operationId: createBook
+      summary: Create a new book.
+      description: ""
       produces:
         - application/json
       parameters:
@@ -57,6 +65,8 @@ paths:
               $ref: '#/definitions/Book'
   /book/{isbn}:
     get:
+      operationId: getBookByISBN
+      summary: Get a specific book by ISBN.
       description: Get a specific book by ISBN. If the user has book creation priviliges and the ISBN is unrecognized, the book definition is pulled from the Open Library API and stored in the database before returning a book object as normal (but with a different status). If the user doesn't have book creation privilieges and the ISBN is unrecognized, a 404 is returned.
       produces:
         - application/json
@@ -64,6 +74,7 @@ paths:
         - name: isbn
           in: path
           type: string
+          required: true
       responses:
         200:
           description: Book returned
@@ -80,7 +91,9 @@ paths:
         404:
           description: Book not found
     delete:
-      description: Delete a specific book by ISBN.
+      operationId: deleteBookByISBN
+      summary: Delete a specific book by ISBN.
+      description: ""
       produces:
         - application/json
       parameters:
@@ -92,7 +105,11 @@ paths:
           description: Book deleted
   /authors:
     get:
+      operationId: listAuthors
+      summary: Get all authors.
       description: Get all authors. Why would you want to do this? I really don't think you want this.
+      consumes:
+        - application/json
       produces:
         - application/json
       parameters:
@@ -101,12 +118,14 @@ paths:
           in: query
           required: false
           type: integer
+          format: int32
           default: 0
         - name: count
           description: The number of authors to retrieve
           in: query
           required: false
           type: integer
+          format: int32
           default: 10
       responses:
         200:
@@ -117,7 +136,9 @@ paths:
             items:
               $ref: '#/definitions/Author'
     post:
-      description: Create a new author.
+      operationId: createAuthor
+      summary: Create a new author.
+      description: ""
       produces:
         - application/json
       parameters:
@@ -138,7 +159,9 @@ paths:
               $ref: '#/definitions/Author'
   /author/{name}:
     get:
-      description: Get a specific author by name.
+      operationId: getAuthorByName
+      summary: Get a specific author by name.
+      description: ""
       produces:
         - application/json
       parameters:
@@ -175,6 +198,7 @@ definitions:
         format: date
       pages:
         type: integer
+        format: int32
       dewey_decimal:
         type: array
         items:
