@@ -76,7 +76,7 @@ object Tables {
 
     def * = (firstName,middleName,lastName) <> (Author.tupled, Author.unapply)
 
-    def books = wrote filter (_.authorID == id) flatMap (_.book)
+    def books = wrote filter (_.authorID === id) flatMap (_.book)
 
   }
 
