@@ -12,11 +12,13 @@ import scalate.ScalateSupport
 import scala.slick.driver.H2Driver.simple._
 import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
 
-case class AdminController(db: Database) extends AlexandriaStack with NativeJsonSupport {
+case class AdminController(db: Database) extends AlexandriaStack
+  with NativeJsonSupport {
 
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   get("/"){
+    logger info "handling request for Admin app"
     contentType = "text/html"
     <html><body>
     <h1>Eventually this will be the admin page.</h1>

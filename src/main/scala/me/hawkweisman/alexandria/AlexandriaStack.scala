@@ -1,10 +1,12 @@
 package me.hawkweisman.alexandria
 
+import org.fusesource.scalate.{ TemplateEngine, Binding }
+import org.fusesource.scalate.layout.DefaultLayoutStrategy
+
 import org.scalatra._
 import scalate.ScalateSupport
 
-import org.fusesource.scalate.{ TemplateEngine, Binding }
-import org.fusesource.scalate.layout.DefaultLayoutStrategy
+import com.typesafe.scalalogging.LazyLogging
 
 import javax.servlet.http.HttpServletRequest
 
@@ -12,7 +14,9 @@ import collection.mutable
 
 import slick.driver.JdbcDriver.api._
 
-trait AlexandriaStack extends ScalatraServlet with ScalateSupport {
+trait AlexandriaStack extends ScalatraServlet
+  with ScalateSupport
+  with LazyLogging {
 
   val db: Database
 
