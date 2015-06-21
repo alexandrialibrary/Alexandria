@@ -3,20 +3,27 @@ package model
 
 import java.sql.Date
 
-import scala.slick.driver.H2Driver.simple._
+
+import slick.driver.JdbcDriver.api._
 
 /**
  * Created by hawk on 5/20/15.
  */
 object Tables {
 
-  val books = TableQuery[Books]
-  val loans = TableQuery[Loans]
-  val users = TableQuery[Users]
+  val books   = TableQuery[Books]
+  val loans   = TableQuery[Loans]
+  val users   = TableQuery[Users]
+  val authors = TableQuery[Authors]
+  val wrote   = TableQuery[Wrote]
 
-  //TODO: AUTHORS table
-  //TODO: WROTE relation for associating author -> book
+  // DBIO Action which creates the schema
+  val createSchemaAction = (
+    books.schema ++ loans.schema ++ users.schema ++ authors.schema ++ wrote.schema
+  ).create
+
   //TODO: AUTH table for password hashes
+
 
   class Books(tag: Tag) extends Table[
     (String,String,Option[String],String,Date,Int,Double,Option[Int])
@@ -29,11 +36,13 @@ object Tables {
     def published = column[Date]("PUBLISHED")
     def pages = column[Int]("PAGES")
     def weight = column[Double]("WEIGHT")
-    def owner = column[Option[Int]]("OWNER_ID")
+    def ownerID = column[Option[Int]]("OWNER_ID")
 
-    def owner_id = foreignKey("OWNER_FK", owner, users)(_.id)
+    def owner = foreignKey("OWNER_FK", ownerID, users)(_.id)
 
-    def * = (isbn,title,subtitle,publisher,published,pages,weight,owner)
+    def * = (isbn,title,subtitle,publisher,published,pages,weight,ownerID)
+
+    def authors = wrote filter (_.bookISBN === isbn) flatMap(_.author)
   }
 
   class Loans(tag: Tag) extends Table[(Int,String,Date)](tag, "LOANS") {
@@ -55,6 +64,29 @@ object Tables {
     def userName = column[String]("USER_NAME")
 
     def * = (id,firstName,middleName,lastName,userName) <> (User.tupled, User.unapply)
+  }
+
+  class Authors(tag: Tag) extends Table[(Author)](tag,"AUTHORS") {
+
+    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+    def firstName = column[String]("FIRST_NAME")
+    def middleName = column[Option[String]]("MIDDLE_NAME")
+    def lastName = column[String]("LAST_NAME")
+
+    def * = (firstName,middleName,lastName) <> (Author.tupled, Author.unapply)
+
+    def books = wrote filter (_.authorID == id) flatMap (_.book)
+
+  }
+
+  class Wrote(tag: Tag) extends Table[(Int,String)](tag, "WROTE") {
+    def authorID = column[Int]("AUTHOR_ID")
+    def bookISBN = column[String]("ISBN")
+
+    def author   = foreignKey("AUTHOR", authorID, authors)(a => a.id)
+    def book     = foreignKey("BOOK", bookISBN, books)(b => b.isbn)
+
+    def * = authorID -> bookISBN
   }
 
 }
