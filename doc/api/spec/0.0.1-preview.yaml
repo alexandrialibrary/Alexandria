@@ -15,9 +15,6 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: test
-          in: query
-          type: integer
         - name: offset
           description: The starting number of the books to retrieve
           in: query
