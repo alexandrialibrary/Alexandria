@@ -84,7 +84,72 @@ paths:
       responses:
         204:
           description: Book deleted
-        
+  /authors:
+    get:
+      description: Get all authors. Why would you want to do this? I really don't think you want this.
+      produces:
+        - application/json
+      parameters:
+        - name: offset
+          description: The starting number of the authors to retrieve
+          in: query
+          required: false
+          type: integer
+          default: 0
+        - name: count
+          description: The number of authors to retrieve
+          in: query
+          required: false
+          type: integer
+          default: 10
+      responses:
+        200:
+          description: List all authors
+          schema:
+            title: Author
+            type: array
+            items:
+              $ref: '#/definitions/Author'
+    post:
+      description: Create a new author.
+      produces:
+        - application/json
+      parameters:
+        - name: author
+          in: body
+          description: Add author to database
+          required: true
+          schema:
+            title: Author
+            items:
+              $ref: '#/definitions/Author'
+      responses:
+        201:
+          description: Author added
+          schema:
+            title: Author
+            items:
+              $ref: '#/definitions/Author'
+  /author/{name}:
+    get:
+      description: Get a specific author by name.
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          description: The author's name
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Author returned
+          schema:
+            title: Author
+            items:
+              $ref: '#/definitions/Author'
+        404:
+          description: Author not found
 
 definitions:
   Book:
@@ -98,3 +163,7 @@ definitions:
       test:
         type: string
   
+  Author:
+    properties:
+      name:
+        type: string
