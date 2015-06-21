@@ -90,6 +90,10 @@ paths:
               $ref: '#/definitions/Book'
         404:
           description: Book not found
+        400:
+          description: Invalid ISBN
+          schema:
+            $ref: '#/definitions/ErrorModel'
     delete:
       operationId: deleteBookByISBN
       summary: Delete a specific book by ISBN.
@@ -210,4 +214,14 @@ definitions:
   Author:
     properties:
       name:
+        type: string
+  ErrorModel:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
         type: string

@@ -2,6 +2,7 @@ package me.hawkweisman.alexandria
 package controllers
 
 import model.Tables._
+import model.ISBN
 
 import responses.{Book,Author}
 
@@ -12,14 +13,20 @@ import org.scalatra.swagger.{Swagger,SwaggerSupport,ResponseMessage,StringRespon
 import org.json4s.{DefaultFormats, Formats}
 
 import scalate.ScalateSupport
+import scala.util.{Try,Success,Failure}
 
-import scala.slick.driver.H2Driver.simple._
+import slick.driver.JdbcDriver.api._
 import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
 
 case class ModelResponseMessage(
   code: Int,
   message: String,
   responseModel: String) extends ResponseMessage[String]
+
+case class ErrorModel(code: Int, message: String)
+object ErrorModel {
+  def fromException(code: Int, err: Throwable) = ErrorModel(code, err.getMessage)
+}
 
 case class APIController(db: Database)(implicit val swagger: Swagger) extends AlexandriaStack
   with NativeJsonSupport
@@ -44,6 +51,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   responseMessage ModelResponseMessage(200, "Book returned", "Book")
   responseMessage ModelResponseMessage(201, "Book created", "Book")
   responseMessage StringResponseMessage(404, "Book not found")
+  responseMessage ModelResponseMessage(400, "Invalid ISBN", "ErrorModel")
   parameters (
     pathParam[String]("isbn")
       .description("ISBN number of the book to look up")
@@ -86,7 +94,16 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
 
     // book API routes -------------------------------------------------------
   get("/book/:isbn", operation(getByISBN)) {
-    NotImplemented("This isn't done yet.")
+    logger debug s"Handling book request for ${params("isbn")}"
+    ISBN parse params("isbn") match {
+      case Success(isbn) =>
+        logger debug s"Successfully parsed ISBN $isbn"
+        NotImplemented("This isn't done yet.")
+      case Failure(why) =>
+        logger warn s"Invalid ISBN: ${why.getMessage}\n${why.getStackTrace}"
+        BadRequest(ErrorModel.fromException(400, why))
+    }
+
   }
 
   delete("/book/:isbn", operation(deleteByISBN)) {
