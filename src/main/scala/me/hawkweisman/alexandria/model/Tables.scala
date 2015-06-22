@@ -25,20 +25,19 @@ object Tables {
 
   //TODO: AUTH table for password hashes
 
-  class Books(tag: Tag) extends Table[(String,String,Option[String],Int,String,String,String,Option[Int])](tag, "BOOKS"){
+  class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
     def isbn = column[String]("ISBN", O.PrimaryKey)
     def title = column[String]("TITLE")
     def subtitle = column[Option[String]]("SUBTITLE")
+    def byline    = column[String]("BYLINE")
     def publisher = column[String]("PUBLISHER")
     def published = column[String]("PUBLISHED")
     def pages = column[Int]("PAGES")
     def weight = column[String]("WEIGHT")
-    def ownerID = column[Option[Int]]("OWNER_ID")
 
-    def owner = foreignKey("OWNER_FK", ownerID, users)(_.id)
-
-    def * = (isbn,title,subtitle,pages,publisher,published,weight,ownerID)
+    def * = (isbn,title,subtitle,byline,pages,publisher,published,weight) <> (
+      (Book.apply _ ).tupled, Book.unapply)
 
     def authors = wrote filter (_.bookISBN === isbn) flatMap (_.author)
     def deweyDecimals = deweys filter (_.isbn === isbn) map (_.dewey)

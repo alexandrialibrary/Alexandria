@@ -12,9 +12,8 @@ case class Book(
   isbn: String, // ISBNs are unique identifiers for a book in the database
   title: String,
   subtitle: Option[String],
-  authors: Seq[Author],
+  byline: String,
   pages: Int,
-  deweyDecimals: Seq[String], // TODO: unfortunately these will probably have to be Strings instead
   publishedDate: String,   // "A library is just a box with strings in it" -- Hawk
   publisher: String,
   weight: String
@@ -34,9 +33,9 @@ object Book {
     val book = parse(json) \ isbn.toString
     val title = (book \ "title").extract[String]
     val subOpt = book \ "subtitle"
-    val authorStr = (book \ "authors" \\ "name").extract[String]
+    val byline = (book \ "by_statement").extract[String]
     val pages = (book \ "number_of_pages").extract[Int]
-    val deweys = (book \ "classifications" \ "dewey_decimal_class").extract[List[String]]
+    //val deweys = (book \ "classifications" \ "dewey_decimal_class").extract[List[String]]
     val pubDate = (book \ "publish_date").extract[String]
     val pubBy = (book \ "publishers" \\ "name").extract[String]
     val weight = (book \ "weight").extract[String]
@@ -44,14 +43,8 @@ object Book {
       case JString(s) => Some(s)
       case _ => None // TODO: this should log that we got a weird thing
     }
-    // TODO: this only supports one author because I don't understand OpenLibrary's
-    // book JSON at all.
-    val author: Author = authorStr split " " match {
-      case Array(first, middle, last) => Author(first, Some(middle), last)
-      case Array(first, last) => Author(first, None, last)
-      case _ => ??? //TODO: maybe return try?
-    }
-    Book(isbn.format, title, subtitle, Seq(author), pages, deweys, pubDate, pubBy, weight)
+
+    Book(isbn.format, title, subtitle, byline, pages, pubDate, pubBy, weight)
   }
 }
 
