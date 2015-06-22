@@ -191,10 +191,10 @@ definitions:
         type: string
       title:
         type: string
-      authors:
-        type: array
-        items:
-          type: string
+      subtitle:
+        type: string
+      byline:
+        type: string
       publisher:
         type: string
       published_date:
@@ -203,12 +203,6 @@ definitions:
       pages:
         type: integer
         format: int32
-      dewey_decimal:
-        type: array
-        items:
-          type: string
-      subtitle:
-        type: string
       weight:
         type: string
   Author:
