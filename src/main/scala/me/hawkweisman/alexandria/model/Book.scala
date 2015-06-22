@@ -21,7 +21,7 @@ case class Book(
   ) {
 
 
-  protected[model] lazy val mungedTitle = if (title startsWith "The") {
+  protected[model] def mungedTitle = if (title startsWith "The") {
     title stripPrefix("The") + ", The" }
     else title
 }

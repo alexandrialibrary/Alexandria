@@ -75,7 +75,7 @@ object Tables {
     def middleName = column[Option[String]]("MIDDLE_NAME")
     def lastName = column[String]("LAST_NAME")
 
-    def * = (firstName,middleName,lastName) <> (Author.tupled, Author.unapply)
+    def * = (firstName,middleName,lastName) <> ((Author.apply _).tupled, Author.unapply)
 
     def books = wrote filter (_.authorID === id) flatMap (_.book)
 
