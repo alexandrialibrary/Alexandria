@@ -33,8 +33,6 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
 
   // Sets up automatic case class to JSON output serialization
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
-  // turn camelCase Scala keys into snake_case JSON keys
-  protected override def transformResponseBody(body: JValue): JValue = body.underscoreKeys
 
   // "description" string for Swagger
   override protected val applicationName: Option[String] = Some("Books")
