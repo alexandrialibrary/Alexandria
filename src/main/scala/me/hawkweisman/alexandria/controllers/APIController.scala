@@ -2,9 +2,7 @@ package me.hawkweisman.alexandria
 package controllers
 
 import model.Tables._
-import model.ISBN
-
-import responses.{Book,Author}
+import model.{ISBN, Book, Author}
 
 import org.scalatra._
 import org.scalatra.json._
@@ -52,21 +50,21 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   responseMessage ModelResponseMessage(201, "Book created", "Book")
   responseMessage StringResponseMessage(404, "Book not found")
   responseMessage ModelResponseMessage(400, "Invalid ISBN", "ErrorModel")
-  parameters (
+  parameters
     pathParam[String]("isbn")
       .description("ISBN number of the book to look up")
       .required
-    )
+
   )
 
   val deleteByISBN = (apiOperation[Unit]("deleteBookByISBN")
     summary "Delete a specific book by ISBN."
     responseMessage StringResponseMessage(204, "Book deleted")
-    parameters (
+    parameters
       pathParam[String]("isbn")
         .description("ISBN number of the book to delete")
         .required
-    )
+
   )
 
   val listBooks = (apiOperation[Seq[Book]]("listBooks")
@@ -85,11 +83,10 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
 
   val createBook = (apiOperation[Book]("createBook")
     summary "Create a new book"
-    parameters (
+    parameters
       bodyParam[Book]("book")
         .description("The book to be added to the library")
         .required
-    )
   )
 
     // book API routes -------------------------------------------------------
@@ -98,9 +95,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     ISBN parse params("isbn") match {
       case Success(isbn) =>
         logger debug s"Successfully parsed ISBN $isbn"
-        db withDynTransaction {
-
-        }
+        val bookByISBN = books filter (_.isbn === isbn.toString)
         NotImplemented("This isn't done yet.")
       case Failure(why) =>
         logger warn s"Invalid ISBN: ${why.getMessage}\n${why.getStackTrace}"
@@ -142,22 +137,19 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   val createAuthor = (apiOperation[Author]("createAuthor")
     summary "Create a new author"
     responseMessage ModelResponseMessage(201,"Author added","Author")
-    parameters (
-      bodyParam[Author]("author")
-        .description("The author to be added")
-        .required
-    )
+    parameters bodyParam[Author]("author")
+      .description("The author to be added")
+      .required
   )
 
   val getAuthorByName = (apiOperation[Author]("getAuthorByName")
     summary "Get a specific author by name."
     responseMessage ModelResponseMessage(200,"Author returned","Author")
     responseMessage StringResponseMessage(404,"Author not found")
-    parameters (
+    parameters
       pathParam[String]("name")
         .description("The author's name")
         .required
-    )
   )
 
   get("/authors/", operation(listAuthors)) {

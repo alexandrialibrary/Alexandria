@@ -25,7 +25,6 @@ object Tables {
 
   //TODO: AUTH table for password hashes
 
-
   class Books(tag: Tag) extends Table[(String,String,Option[String],Int,String,String,String,Option[Int])](tag, "BOOKS"){
 
     def isbn = column[String]("ISBN", O.PrimaryKey)
