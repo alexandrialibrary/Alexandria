@@ -15,7 +15,7 @@ case class Book(
   authors: Seq[Author],
   pages: Int,
   deweyDecimals: Seq[String], // TODO: unfortunately these will probably have to be Strings instead
-  published: String,   // "A library is just a box with strings in it" -- Hawk
+  publishedDate: String,   // "A library is just a box with strings in it" -- Hawk
   publisher: String,
   weight: String
   ) {
