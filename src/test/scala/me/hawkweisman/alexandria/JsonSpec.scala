@@ -16,9 +16,7 @@ class JsonSpec extends WordSpec with Matchers {
         book.isbn shouldBe isbn.toString
         book.pages shouldEqual 92
         book.publisher shouldEqual "Litwin Books"
-        book.authors should have length 1
-        book.authors(0).getFirstName shouldEqual "John"
-        book.authors(0).getLastName shouldEqual "Miedema"
+        book.byline shouldEqual "by John Miedema."
       }
     }
   }
