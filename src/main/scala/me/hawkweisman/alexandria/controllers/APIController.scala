@@ -3,7 +3,6 @@ package controllers
 
 import model.Tables._
 import model.{ISBN, Book, Author}
-import org.json4s.JsonAST.JValue
 
 import org.scalatra._
 import org.scalatra.json._
@@ -11,11 +10,9 @@ import org.scalatra.swagger.{Swagger,SwaggerSupport,ResponseMessage,StringRespon
 
 import org.json4s.{DefaultFormats, Formats}
 
-import scalate.ScalateSupport
 import scala.util.{Try,Success,Failure}
 
 import slick.driver.JdbcDriver.api._
-import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
 
 case class ModelResponseMessage(
   code: Int,
