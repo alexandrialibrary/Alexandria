@@ -42,7 +42,7 @@ paths:
             items:
               $ref: '#/definitions/Book'
     post:
-      operationId: createBook
+      operationId: Create book
       summary: Create a new book.
       description: ""
       produces:
@@ -203,6 +203,12 @@ definitions:
       pages:
         type: integer
         format: int32
+      dewey_decimal:
+        type: array
+        items:
+          type: string
+      subtitle:
+        type: string
       weight:
         type: string
   Author:
