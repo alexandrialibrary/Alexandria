@@ -7,6 +7,9 @@ import dispatch._, Defaults._
 
 import me.hawkweisman.util.collection.RepeatableSeq
 
+import org.json4s.JsonAST.JValue
+import org.json4s.native.JsonMethods._
+
 case class ISBN(group: String,pub: String,title: String, prefix: Option[String]) {
 
   def query = host("openlibrary.org").secure / "api" / "books" <<?Map(
@@ -29,12 +32,15 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
 
   /**
    * Attempt to look up the book metadata for this ISBN.
-   * Book metadata comes from the Google Books API.
+   * Book metadata comes from the OpenLibrary API
    * @return [[Success]] containing a [[Book]] if a book was found for this ISBN,
    */
-  lazy val lookup: Future[Book] = Http(query OK as.String) map {
-    (resp) => Book.fromJson(resp, this)
+  private lazy val lookup: Future[JValue] = Http(query OK as.String) map {
+    (resp) => parse(resp)
   }
+
+  lazy val authors: Future[List[Author]] = lookup map { Author fromJson _ }
+  lazy val book: Future[Book] = lookup map { Book.fromJson(_, this) }
   /**
    * Calculate the check value for an ISBN-13 number
    * @return

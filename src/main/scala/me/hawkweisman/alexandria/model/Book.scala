@@ -19,7 +19,6 @@ case class Book(
   weight: String
   ) {
 
-
   protected[model] def mungedTitle = if (title startsWith "The") {
     title stripPrefix("The") + ", The" }
     else title
@@ -29,17 +28,16 @@ case class Book(
 object Book {
   implicit val formats = DefaultFormats
 
-  def fromJson(json: String, isbn: ISBN): Book = {
-    val book = parse(json) \ isbn.toString
-    val title = (book \ "title").extract[String]
-    val subOpt = book \ "subtitle"
-    val byline = (book \ "by_statement").extract[String]
-    val pages = (book \ "number_of_pages").extract[Int]
-    //val deweys = (book \ "classifications" \ "dewey_decimal_class").extract[List[String]]
-    val pubDate = (book \ "publish_date").extract[String]
-    val pubBy = (book \ "publishers" \\ "name").extract[String]
-    val weight = (book \ "weight").extract[String]
-    val subtitle = (book \ "subtitle").toOption flatMap {
+  def fromJson(json: JValue, isbn: ISBN): Book = {
+    val title = (json \ "title").extract[String]
+    val subOpt = json \ "subtitle"
+    val byline = (json \ "by_statement").extract[String]
+    val pages = (json \ "number_of_pages").extract[Int]
+    //val deweys = (json \ "classifications" \ "dewey_decimal_class").extract[List[String]]
+    val pubDate = (json \ "publish_date").extract[String]
+    val pubBy = (json \ "publishers" \\ "name").extract[String]
+    val weight = (json \ "weight").extract[String]
+    val subtitle = (json \ "subtitle").toOption flatMap {
       case JString(s) => Some(s)
       case _ => None // TODO: this should log that we got a weird thing
     }
