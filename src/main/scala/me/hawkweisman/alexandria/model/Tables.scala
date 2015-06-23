@@ -23,7 +23,18 @@ object Tables {
     books.schema ++ loans.schema ++ users.schema ++ authors.schema ++ wrote.schema
   ).create
 
+  // DBIO Action which DESTROYS FUCKING EVERYTHING
+  val dropTablesAction = (
+    books.schema ++ loans.schema ++ users.schema ++ authors.schema ++ wrote.schema
+  ).drop
+
   //TODO: AUTH table for password hashes
+
+  def booksByISBNQuery(isbn: ISBN) = for {
+    book <- books if book.isbn === isbn.toString
+  } yield book
+
+  //val booksByISBN = Compiled(booksByISBNQuery _)
 
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
@@ -43,6 +54,7 @@ object Tables {
     def deweyDecimals = deweys filter (_.isbn === isbn) map (_.dewey)
     def loanedTo = loans filter (_.isbn === isbn) flatMap (_.who)
     def loanedUntil = loans filter (_.isbn === isbn) map (_.until)
+
   }
 
   class Loans(tag: Tag) extends Table[(Int,String,Date)](tag, "LOANS") {

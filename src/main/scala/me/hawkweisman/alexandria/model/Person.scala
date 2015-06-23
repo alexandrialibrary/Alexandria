@@ -28,6 +28,8 @@ class Author(
   def getMiddleName = this.middleName
   def getLastName = this.lastName
   val name = s"$firstName ${middleName map { _ + " " } getOrElse ""}$lastName"
+
+  override def toString: String = name
 }
 
 object Author {

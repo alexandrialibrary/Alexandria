@@ -8,7 +8,7 @@ import javax.servlet.ServletContext
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.typesafe.scalalogging.LazyLogging
 
-import slick.driver.JdbcDriver.api._
+import slick.driver.H2Driver.api._
 
 class ScalatraBootstrap extends LifeCycle
   with LazyLogging {
@@ -37,7 +37,7 @@ class ScalatraBootstrap extends LifeCycle
   }
 
   private def closeDbConnection() {
-    //logger.info("Closing c3po connection pool")
+    logger.info("Closing c3po connection pool")
     cpds.close
   }
 

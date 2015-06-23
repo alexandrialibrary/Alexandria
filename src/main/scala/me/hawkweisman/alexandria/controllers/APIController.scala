@@ -4,6 +4,7 @@ package controllers
 import me.hawkweisman.alexandria.controllers.responses.{ModelResponseMessage,ErrorModel}
 import model.Tables._
 import model.{ISBN, Book, Author}
+import util.RichException.makeRich
 
 import org.scalatra._
 import org.scalatra.json._
@@ -11,11 +12,12 @@ import org.scalatra.swagger.{Swagger,SwaggerSupport,ResponseMessage,StringRespon
 
 import org.json4s.{DefaultFormats, Formats}
 
+import scala.concurrent.duration.Duration
 import scala.util.{Try,Success,Failure}
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
-import slick.driver.JdbcDriver.api._
-
-
+import slick.driver.H2Driver.api._
 
 
 case class APIController(db: Database)(implicit val swagger: Swagger) extends AlexandriaStack
@@ -83,14 +85,44 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
 
     // book API routes -------------------------------------------------------
   get("/book/:isbn", operation(getByISBN)) {
-    logger debug s"Handling book request for ${params("isbn")}"
+    logger info s"Handling book request for ${params("isbn")}"
     ISBN parse params("isbn") match {
       case Success(isbn) =>
-        logger debug s"Successfully parsed ISBN $isbn"
-        val bookByISBN = books filter (_.isbn === isbn.toString)
-        NotImplemented("This isn't done yet.")
+        logger info s"Successfully parsed ISBN $isbn"
+        val bookQuery: Future[Option[Book]] = db run booksByISBNQuery(isbn)
+          .result
+          .headOption
+        Await.ready(bookQuery, Duration.Inf).value.get match { // Query succeeded
+          case Success(Some(book: Book)) =>
+            logger info s"Found ${book.title} for ISBN $isbn, sending to client"
+            Ok(book)
+          case Success(None) =>
+            logger info s"Could not find book for ISBN $isbn, querying OpenLibrary"
+            val created: Future[Book] = isbn.authors flatMap { case newAuthors: Seq[Author] =>
+              logger info s"Found authors $newAuthors, inserting into DB"
+              db.run(authors ++= newAuthors)
+            } flatMap { (_) =>
+              isbn.book
+            } flatMap { (book: Book) =>
+              logger info s"Found book ${book.title}, inserting into DB"
+              db.run(books += book) flatMap { (_) =>
+                db.run(booksByISBNQuery(isbn).result.head)
+              }
+            }
+            Await.ready(created, Duration.Inf).value.get match {
+              case Success(book) =>
+                logger info s"Inserted ${book.title}"
+                Created(book)
+              case Failure(why) =>
+                logger error s"Could not create book: $why\n${why.stackTraceString}"
+                InternalServerError(ErrorModel fromException (500,why))
+            }
+          case Failure(why) =>
+            logger error s"Unexpected query failure: $why\n${why.stackTraceString}"
+            InternalServerError(ErrorModel.fromException(500, why))
+        }
       case Failure(why) =>
-        logger warn s"Invalid ISBN: ${why.getMessage}\n${why.getStackTrace}"
+        logger warn s"Invalid ISBN: ${why.getMessage}\n${why.stackTraceString}"
         BadRequest(ErrorModel.fromException(400, why))
     }
 
