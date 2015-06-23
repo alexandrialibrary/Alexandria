@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest
 
 import collection.mutable
 
-import slick.driver.JdbcDriver.api._
+import slick.driver.H2Driver.api._
 
 trait AlexandriaStack extends ScalatraServlet
   with ScalateSupport

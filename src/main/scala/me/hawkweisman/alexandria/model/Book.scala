@@ -20,7 +20,7 @@ case class Book(
   ) {
 
   protected[model] def mungedTitle = if (title startsWith "The") {
-    title stripPrefix("The") + ", The" }
+    title.stripPrefix("The") + ", The" }
     else title
 }
 

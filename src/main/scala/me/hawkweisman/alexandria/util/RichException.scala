@@ -3,7 +3,7 @@ package util
 
 import java.io.{PrintWriter, StringWriter}
 
-import scala.language.implicitConversions
+import scala.language.{postfixOps, implicitConversions}
 
 /**
  * Created by hawk on 6/22/15.
@@ -11,7 +11,7 @@ import scala.language.implicitConversions
 class RichException(val e: Throwable) {
   def stackTraceString: String = {
     val sw = new StringWriter
-    e.printStackTrace(new PrintWriter(sw));
+    e printStackTrace new PrintWriter(sw)
     sw toString
   }
 }

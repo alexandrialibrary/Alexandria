@@ -4,7 +4,7 @@ package model
 import java.sql.Date
 
 
-import slick.driver.JdbcDriver.api._
+import slick.driver.H2Driver.api._
 
 /**
  * Created by hawk on 5/20/15.

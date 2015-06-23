@@ -1,14 +1,7 @@
 package me.hawkweisman.alexandria
 package controllers
 
-import model.Tables._
-
-import org.scalatra._
-
-import scalate.ScalateSupport
-
-import scala.slick.driver.H2Driver.simple._
-import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
+import slick.driver.H2Driver.api.Database
 
 case class AppController(db: Database) extends AlexandriaStack {
 

@@ -12,7 +12,7 @@ import org.json4s.native.JsonMethods._
 import me.hawkweisman.alexandria.model.Book
 import me.hawkweisman.alexandria.model.Tables._
 
-import slick.driver.JdbcDriver.api._
+import slick.driver.H2Driver.api._
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
