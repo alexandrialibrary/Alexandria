@@ -1,6 +1,7 @@
 package me.hawkweisman.alexandria
 package controllers
 
+import me.hawkweisman.alexandria.controllers.responses.{ModelResponseMessage,ErrorModel}
 import model.Tables._
 import model.{ISBN, Book, Author}
 
@@ -14,15 +15,8 @@ import scala.util.{Try,Success,Failure}
 
 import slick.driver.JdbcDriver.api._
 
-case class ModelResponseMessage(
-  code: Int,
-  message: String,
-  responseModel: String) extends ResponseMessage[String]
 
-case class ErrorModel(code: Int, message: String)
-object ErrorModel {
-  def fromException(code: Int, err: Throwable) = ErrorModel(code, err.getMessage)
-}
+
 
 case class APIController(db: Database)(implicit val swagger: Swagger) extends AlexandriaStack
   with NativeJsonSupport
