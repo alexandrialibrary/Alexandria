@@ -54,7 +54,7 @@ jrebel.lic
 .project
 
 .ensime*
-*.sublime-*
+*.sublime-workspace
 .cache
 
 # intellij
