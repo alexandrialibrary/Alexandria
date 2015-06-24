@@ -109,6 +109,8 @@ paths:
           description: Book deleted
         404:
           description: Matching book not found.
+          schema:
+            $ref: '#/definitions/ErrorModel'
         400:
           description: Invalid ISBN
           schema:
