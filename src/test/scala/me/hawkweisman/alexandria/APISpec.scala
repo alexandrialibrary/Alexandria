@@ -2,15 +2,14 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
 
 import me.hawkweisman.alexandria.controllers.APIController
 import me.hawkweisman.alexandria.controllers.swagger.AlexandriaSwagger
+import me.hawkweisman.alexandria.model.{Book, Author}
+import me.hawkweisman.alexandria.model.Tables._
 
-import org.scalatest.{Inside, BeforeAndAfter, Matchers,OptionValues}
+import org.scalatest.{Inside, Matchers, OptionValues}
 import org.scalatra.test.scalatest._
 
 import org.json4s._
 import org.json4s.native.JsonMethods._
-
-import me.hawkweisman.alexandria.model.Book
-import me.hawkweisman.alexandria.model.Tables._
 
 import slick.driver.H2Driver.api._
 
@@ -20,8 +19,8 @@ import scala.concurrent.duration._
 class APISpec extends ScalatraWordSpec
   with Matchers
   with Inside
-  with BeforeAndAfter
-  with OptionValues {
+  with OptionValues
+  with ClearDB {
 
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
@@ -30,14 +29,19 @@ class APISpec extends ScalatraWordSpec
   val db = Database.forDataSource(cpds)
   addServlet(new APIController(db), "/*")
 
-  before {
-    // block on creating fresh DB before running test
-    Await.ready(db run createSchemaAction, Duration.Inf)
-  }
-
-  after {
-    // block on dropping tables from DB before running next test
-    Await.ready(db run dropTablesAction, Duration.Inf)
+  def createAuthors() = {
+    Await.ready( db.run(
+        authors += new Author("John", "Miedema")
+      ), Duration.Inf)
+    Await.ready( db.run(
+      authors += new Author("Donald", "E.", "Knuth")
+    ), Duration.Inf)
+    Await.ready( db.run(
+      authors += new Author("Ronald", "L.", "Graham")
+    ), Duration.Inf)
+    Await.ready( db.run(
+      authors += new Author("Oren", "Patashnik")
+    ), Duration.Inf)
   }
 
   "The GET /book/{isbn} route" when {
@@ -435,6 +439,70 @@ class APISpec extends ScalatraWordSpec
               weight        = Some("2.5 pounds")
             )
           )
+        }
+      }
+    }
+  }
+  "The GET /authors/ route" when {
+    "the requested number of authors is greater than the number of authors in the database" should {
+      "return all the authors in the database" in {
+        createAuthors()
+
+        get("/authors/") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 4
+          authors should contain allOf (
+            new Author("John", "Miedema"),
+            new Author("Donald", "E.", "Knuth"),
+            new Author("Ronald", "L.", "Graham"),
+            new Author("Oren", "Patashnik")
+            )
+        }
+      }
+    }
+    "the requested number of authors is less than the number of authors in the database" should {
+      "return the requested amount" in {
+        createAuthors()
+
+        get("/authors/?offset=0&count=2") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 2
+          authors should contain allOf (
+            new Author("John", "Miedema"),
+            new Author("Donald", "E.", "Knuth")
+            )
+        }
+      }
+      "return the requested amount, starting at a given offset" in {
+        createAuthors()
+
+        get("/authors/?offset=2&count=2") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 2
+          authors should contain allOf (
+             new Author("Ronald", "L.", "Graham"),
+            new Author("Oren", "Patashnik")
+            )
+        }
+      }
+    }
+    "the requested number of authors is negative" should {
+      "return all the authors in the database" in {
+        createAuthors()
+
+        get("/authors/?offset=0&count=-1") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 4
+          authors should contain allOf (
+            new Author("Donald", "E.", "Knuth"),
+            new Author("Ronald", "L.", "Graham"),
+            new Author("Oren", "Patashnik"),
+            new Author("John", "Miedema")
+            )
         }
       }
     }

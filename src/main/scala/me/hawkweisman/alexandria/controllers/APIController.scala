@@ -1,10 +1,11 @@
 package me.hawkweisman.alexandria
 package controllers
 
+import me.hawkweisman.util.RichException.makeRich
+
 import responses.{ModelResponseMessage,ErrorModel,BookSerializer}
 import model.Tables._
 import model.{ISBN, Book, Author}
-import util.RichException.makeRich
 
 import org.scalatra._
 import org.scalatra.json._
@@ -203,7 +204,26 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   )
 
   get("/authors/?", operation(listAuthors)) {
-    NotImplemented("This isn't done yet.")
+    val offset: Int = params.get("offset")
+      .flatMap((p: String) => Try(p.toInt) toOption )
+      .getOrElse(0)
+    val count:  Int = params.get("count")
+      .flatMap((p: String) => Try(p.toInt) toOption )
+      .getOrElse(10)
+    val query = db.run(if (count > 0) {
+      authors
+        .drop(offset)
+        .take(count)
+        .result
+      } else {
+       authors
+        .drop(offset)
+        .result
+    })
+    Await.ready(query, Duration.Inf).value.get match {
+      case Success(authors) => Ok(authors)
+      case Failure(why)   => InternalServerError(ErrorModel fromException (500, why))
+    }
   }
 
   post("/authors/?", operation(createAuthor)) {
