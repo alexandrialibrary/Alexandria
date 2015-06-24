@@ -9,6 +9,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-route.min.js"> </script>
         <link rel="stylesheet" href="compiled/styles.css">
         <script src="compiled/<%= appScript %>.js"></script>
+        <title><!-- Print App Title Here --></title>
     </head>
     <body>
       <%= unescape(body) %>
