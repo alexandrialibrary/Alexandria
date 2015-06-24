@@ -1,0 +1,42 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+
+# 2-space soft tabs for Scala
+[*.{scala,sbt}]
+indent_style = space
+indent_size = 2
+
+# 2-space soft tabs for CoffeeScript
+[*.coffee]
+indent_style = space
+indent_size = 2
+
+# 2-space soft tabs for YAML
+[*.yml]
+indent_style = space
+indent_size = 2
+
+# 4-space tabs for HTML and XML
+[*.{x,ht}ml]
+indent_style = tab
+indent_size = 4
+
+# 4-space tabs for SSP
+[*.ssp]
+indent_style = tab
+indent_size = 4
+
+# 4-space tabs for JavaScript and JSON
+[{*.js, *.json}]
+indent_style = tab
+indent_size = 4
+
+# 4-space tabs for CSS and SASS/SCSS
+[*.{c, sc,sa}ss]
+indent_style = tab
+indent_size = 4

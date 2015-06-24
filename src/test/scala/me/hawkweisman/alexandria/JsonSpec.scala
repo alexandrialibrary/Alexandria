@@ -19,7 +19,7 @@ class JsonSpec extends WordSpec
         val book = Book.fromJson(json, isbn)
 
         book.title shouldEqual "Slow reading"
-        book.weight shouldEqual "1 grams"
+        book.weight.value shouldEqual "1 grams"
         book.isbn shouldBe isbn.toString
         book.pages shouldEqual 92
         book.publisher shouldEqual "Litwin Books"

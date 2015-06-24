@@ -38,14 +38,14 @@ object Tables {
 
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
-    def isbn = column[String]("ISBN", O.PrimaryKey)
-    def title = column[String]("TITLE")
-    def subtitle = column[Option[String]]("SUBTITLE")
+    def isbn      = column[String]("ISBN", O.PrimaryKey)
+    def title     = column[String]("TITLE")
+    def subtitle  = column[Option[String]]("SUBTITLE")
     def byline    = column[String]("BYLINE")
     def publisher = column[String]("PUBLISHER")
     def published = column[String]("PUBLISHED")
-    def pages = column[Int]("PAGES")
-    def weight = column[String]("WEIGHT")
+    def pages     = column[Int]("PAGES")
+    def weight    = column[Option[String]]("WEIGHT")
 
     def * = (isbn,title,subtitle,byline,pages,publisher,published,weight) <> (
       (Book.apply _ ).tupled, Book.unapply)
@@ -59,8 +59,8 @@ object Tables {
 
   class Loans(tag: Tag) extends Table[(Int,String,Date)](tag, "LOANS") {
     def userID = column[Int]("USER_ID")
-    def isbn = column[String]("ISBN")
-    def until = column[Date]("UNTIL")
+    def isbn   = column[String]("ISBN")
+    def until  = column[Date]("UNTIL")
 
     def what = foreignKey("ISBN_FK", isbn, books)(b => b.isbn)
     def who  = foreignKey("USER_FK", userID, users)(u => u.id)
@@ -70,21 +70,21 @@ object Tables {
 
   class Users(tag: Tag) extends Table[User](tag, "USERS") {
 
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-    def firstName = column[String]("FIRST_NAME")
-    def middleName = column[Option[String]]("MIDDLE_NAME")
-    def lastName = column[String]("LAST_NAME")
-    def userName = column[String]("USER_NAME")
+    def id          = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+    def firstName   = column[String]("FIRST_NAME")
+    def middleName  = column[Option[String]]("MIDDLE_NAME")
+    def lastName    = column[String]("LAST_NAME")
+    def userName    = column[String]("USER_NAME")
 
     def * = (id,firstName,middleName,lastName,userName) <> (User.tupled, User.unapply)
   }
 
   class Authors(tag: Tag) extends Table[(Author)](tag,"AUTHORS") {
 
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-    def firstName = column[String]("FIRST_NAME")
-    def middleName = column[Option[String]]("MIDDLE_NAME")
-    def lastName = column[String]("LAST_NAME")
+    def id          = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+    def firstName   = column[String]("FIRST_NAME")
+    def middleName  = column[Option[String]]("MIDDLE_NAME")
+    def lastName    = column[String]("LAST_NAME")
 
     def * = (firstName,middleName,lastName) <> ((Author.apply _).tupled, Author.unapply)
 
