@@ -24,6 +24,10 @@ class Author(
   private val middleName: Option[String],
   private val lastName: String
   ) extends Person {
+
+  def this(first: String, middle: String, last: String) = this(first,Some(middle),last)
+  def this(first: String, last: String) = this(first,None,last)
+
   def getFirstName = this.firstName
   def getMiddleName = this.middleName
   def getLastName = this.lastName
@@ -35,7 +39,6 @@ class Author(
 object Author {
 
   private implicit val formats = DefaultFormats
-
   def apply(first: String, middle: Option[String], last: String): Author =
     new Author(first,middle,last)
   def unapply(a: Author): Option[(String,Option[String],String)] =
