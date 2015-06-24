@@ -8,6 +8,10 @@
         <js>/assets/coffee/alexandria-app.coffee</js>
     </group>
 
+    <group name="alexandria-admin">
+        <js>/assets/coffee/alexandria-admin.coffee</js>
+    </group>
+
     <group name="scripts">
         <js>/assets/js/*.js</js>
     </group>
