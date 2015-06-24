@@ -22,7 +22,7 @@ import slick.driver.H2Driver.api._
 /**
  * Main Scalatra API control.
  *
- * This should be attached at the `/api/*` route and handles the
+ * This should be attached at the `/api/` route and handles the
  * books and authors APIs.
  *
  * @author Hawk Weisman
