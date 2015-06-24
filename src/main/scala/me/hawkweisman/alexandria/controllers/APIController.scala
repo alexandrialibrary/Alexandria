@@ -1,7 +1,7 @@
 package me.hawkweisman.alexandria
 package controllers
 
-import me.hawkweisman.alexandria.controllers.responses.{ModelResponseMessage,ErrorModel}
+import responses.{ModelResponseMessage,ErrorModel,BookSerializer}
 import model.Tables._
 import model.{ISBN, Book, Author}
 import util.RichException.makeRich
@@ -25,7 +25,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   with SwaggerSupport {
 
   // Sets up automatic case class to JSON output serialization
-  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats + BookSerializer
 
   // "description" string for Swagger
   override protected val applicationName: Option[String] = Some("Books")
@@ -85,33 +85,33 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
 
     // book API routes -------------------------------------------------------
   get("/book/:isbn", operation(getByISBN)) {
-    logger info s"Handling book request for ${params("isbn")}"
+    logger debug s"Handling book request for ${params("isbn")}"
     ISBN parse params("isbn") match {
       case Success(isbn) =>
-        logger info s"Successfully parsed ISBN $isbn"
+        logger debug s"Successfully parsed ISBN $isbn"
         val bookQuery: Future[Option[Book]] = db run booksByISBNQuery(isbn)
           .result
           .headOption
         Await.ready(bookQuery, Duration.Inf).value.get match { // Query succeeded
           case Success(Some(book: Book)) =>
-            logger info s"Found ${book.title} for ISBN $isbn, sending to client"
+            logger info s"Found '${book.title}' for ISBN $isbn, sending to client"
             Ok(book)
           case Success(None) =>
-            logger info s"Could not find book for ISBN $isbn, querying OpenLibrary"
+            logger debug s"Could not find book for ISBN $isbn, querying OpenLibrary"
             val created: Future[Book] = isbn.authors flatMap { case newAuthors: Seq[Author] =>
-              logger info s"Found authors $newAuthors, inserting into DB"
+              logger info s"Found authors ${newAuthors mkString ", "}, inserting into DB"
               db.run(authors ++= newAuthors)
             } flatMap { (_) =>
               isbn.book
             } flatMap { (book: Book) =>
-              logger info s"Found book ${book.title}, inserting into DB"
+              logger info s"Found book' ${book.title}', inserting into DB"
               db.run(books += book) flatMap { (_) =>
                 db.run(booksByISBNQuery(isbn).result.head)
               }
             }
             Await.ready(created, Duration.Inf).value.get match {
               case Success(book) =>
-                logger info s"Inserted ${book.title}"
+                logger debug s"Inserted ${book.title}"
                 Created(book)
               case Failure(why) =>
                 logger error s"Could not create book: $why\n${why.stackTraceString}"
@@ -133,7 +133,20 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   }
 
   get("/books", operation(listBooks)) {
-    NotImplemented("This isn't done yet.")
+    val offset: Int = params.get("offset")
+      .flatMap((p: String) => Try(p.toInt) toOption )
+      .getOrElse(0)
+    val count:  Int = params.get("count")
+      .flatMap((p: String) => Try(p.toInt) toOption )
+      .getOrElse(10)
+    val query = db.run(books
+        .drop(offset)
+        .take(count)
+        .result)
+    Await.ready(query, Duration.Inf).value.get match {
+      case Success(books) => Ok(books)
+      case Failure(why)   => InternalServerError(ErrorModel fromException (500, why))
+    }
   }
 
   post("/books", operation(createBook)) {

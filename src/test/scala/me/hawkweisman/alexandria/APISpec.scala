@@ -92,6 +92,7 @@ class APISpec extends ScalatraWordSpec
     }
     "handling requests for a list of books" should {
       "return a list of books from the database" in {
+        // todo: finish
         Await.ready(db.run(
           books ++= Seq(
             Book(
