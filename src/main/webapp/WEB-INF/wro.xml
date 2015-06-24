@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd"
     >
     <group name="alexandria-app">
-        <js>/assets/alexandria.coffee</js>
+        <js>/assets/alexandria-app.coffee</js>
     </group>
 
     <group name="scripts">

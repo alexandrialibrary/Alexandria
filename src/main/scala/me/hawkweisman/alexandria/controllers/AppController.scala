@@ -13,10 +13,7 @@ case class AppController(db: Database) extends AlexandriaStack {
 
   get("/") {
     contentType = "text/html"
-    jade(
-      "main",
-      "books" -> ???
-    )
+    ssp("/app", "appScript" -> "alexandria-app")
   }
 
 }
