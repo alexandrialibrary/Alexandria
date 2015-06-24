@@ -152,9 +152,13 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
         .drop(offset)
         .result
     })
-    Await.ready(query, Duration.Inf).value.get match {
-      case Success(books) => Ok(books)
-      case Failure(why)   => InternalServerError(ErrorModel fromException (500, why))
+    new AsyncResult {
+      val is = query map { books =>
+        logger debug "Successfully got list of books"
+        Ok(books)
+      } recover { case why: Throwable =>
+        InternalServerError(ErrorModel fromException (500, why))
+      }
     }
   }
 
@@ -199,12 +203,12 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   )
 
   get("/authors/?", operation(listAuthors)) {
-    val offset: Int = params.get("offset")
-      .flatMap((p: String) => Try(p.toInt) toOption )
-      .getOrElse(0)
-    val count:  Int = params.get("count")
-      .flatMap((p: String) => Try(p.toInt) toOption )
-      .getOrElse(10)
+    val offset: Int = params.get("offset") flatMap {
+        p: String => Try(p.toInt) toOption
+      } getOrElse(0)
+    val count:  Int = params.get("count") flatMap {
+        p: String => Try(p.toInt) toOption
+      } getOrElse(10)
     val query = db.run(if (count > 0) {
       authors
         .drop(offset)
