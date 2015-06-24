@@ -63,14 +63,14 @@ class APISpec extends ScalatraWordSpec
       }
       "correctly handle a lookup for an ISBN that is already in the database" in {
         Await.ready(db.run(books += Book(
-          "ISBN:9780980200447",
-          "Slow reading",
-          None,
-          "by John Miedema.",
-          92,
-          "March 2009",
-          "Litwin Books",
-          Some("1 grams")
+          isbn          = "ISBN:9780980200447",
+          title         = "Slow reading",
+          subtitle      = None,
+          byline        = "by John Miedema.",
+          pages         = 92,
+          publishedDate = "March 2009",
+          publisher     = "Litwin Books",
+          weight        = Some("1 grams")
         )), Duration.Inf)
         get("/book/ISBN:9780980200447") {
           //info(body) //uncomment this if you need to look at the books that are happening
@@ -96,23 +96,24 @@ class APISpec extends ScalatraWordSpec
         Await.ready(db.run(
           books ++= Seq(
             Book(
-              "ISBN:9780980200447",
-              "Slow reading",
-              None,
-              "by John Miedema.",
-              92,
-              "March 2009",
-              "Litwin Books",
-              Some("1 grams")),
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "by John Miedema.",
+              pages         = 92,
+              publishedDate = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            ),
             Book(
-              isbn = "ISBN:0201558025",
-              title = "Concrete mathematics",
-              subtitle = Some("a foundation for computer science"),
-              byline = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
-              pages = 657,
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
               publishedDate = "1994",
-              publisher = "Addison-Wesley",
-              weight = None
+              publisher     = "Addison-Wesley",
+              weight        = None
             )
         )), Duration.Inf)
       }
