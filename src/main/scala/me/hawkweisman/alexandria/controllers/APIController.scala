@@ -142,16 +142,11 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     val count:  Int = params.get("count") flatMap {
         p: String => Try(p.toInt) toOption
       } getOrElse(10)
-    val query = db.run(if (count > 0) {
-      books
-        .drop(offset)
-        .take(count)
-        .result
+    val query = db run (if (count > 0) {
+        books.drop(offset).take(count).result
       } else {
-       books
-        .drop(offset)
-        .result
-    })
+        books.drop(offset).result
+      })
     new AsyncResult {
       val is = query map { books =>
         logger debug "Successfully got list of books"
@@ -209,16 +204,11 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     val count:  Int = params.get("count") flatMap {
         p: String => Try(p.toInt) toOption
       } getOrElse(10)
-    val query = db.run(if (count > 0) {
-      authors
-        .drop(offset)
-        .take(count)
-        .result
-      } else {
-       authors
-        .drop(offset)
-        .result
-    })
+      val query = db run (if (count > 0) {
+          authors.drop(offset).take(count).result
+        } else {
+          authors.drop(offset).result
+        })
     new AsyncResult {
       val is = query map { authors =>
         logger debug "Successfully got list of authors"
