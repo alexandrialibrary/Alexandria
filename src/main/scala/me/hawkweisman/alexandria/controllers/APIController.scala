@@ -19,7 +19,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import slick.driver.H2Driver.api._
 
-
+/**
+ * Main Scalatra API control.
+ *
+ * This should be attached at the `/api/*` route and handles the
+ * books and authors APIs.
+ *
+ * @author Hawk Weisman
+ */
 case class APIController(db: Database)(implicit val swagger: Swagger) extends AlexandriaStack
   with NativeJsonSupport
   with SwaggerSupport {

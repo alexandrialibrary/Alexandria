@@ -15,6 +15,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+/**
+ * Control for the Alexandria admin app.
+ *
+ * This gets attached at `/admin/` and handles the admin API and serving
+ * the admin app page.
+ *
+ * @author Hawk Weisman
+ */
 case class AdminController(db: Database) extends AlexandriaStack
   with NativeJsonSupport {
 

@@ -9,6 +9,11 @@ import org.json4s.JsonDSL._
 import model.Book
 
 /**
+ * Custom serializer for serializing [[model.Book Book]]s which
+ * transforms `None`s to `null`s instead of removing them.
+ *
+ * @author Hawk Weisman
+ * 
  * Created by hawk on 6/23/15.
  */
 object BookSerializer extends CustomSerializer[Book](implicit format => ({
