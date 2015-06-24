@@ -45,7 +45,7 @@ object Tables {
     def publisher = column[String]("PUBLISHER")
     def published = column[String]("PUBLISHED")
     def pages = column[Int]("PAGES")
-    def weight = column[String]("WEIGHT")
+    def weight = column[Option[String]]("WEIGHT")
 
     def * = (isbn,title,subtitle,byline,pages,publisher,published,weight) <> (
       (Book.apply _ ).tupled, Book.unapply)

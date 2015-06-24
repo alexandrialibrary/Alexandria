@@ -16,7 +16,7 @@ case class Book(
   pages: Int,
   publishedDate: String,   // "A library is just a box with strings in it" -- Hawk
   publisher: String,
-  weight: String
+  weight: Option[String]
   ) {
 
   protected[model] def mungedTitle = if (title startsWith "The") {
@@ -37,7 +37,10 @@ object Book {
     //val deweys = (book \ "classifications" \ "dewey_decimal_class").extract[List[String]]
     val pubDate = (book \ "publish_date").extract[String]
     val pubBy = (book \ "publishers" \\ "name").extract[String]
-    val weight = (book \ "weight").extract[String]
+    val weight = (book \ "weight").toOption flatMap {
+      case JString(s) => Some(s)
+      case _ => None
+    }
     val subtitle = (book \ "subtitle").toOption flatMap {
       case JString(s) => Some(s)
       case _ => None // TODO: this should log that we got a weird thing
