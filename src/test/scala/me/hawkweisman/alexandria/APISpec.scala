@@ -2,15 +2,14 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
 
 import me.hawkweisman.alexandria.controllers.APIController
 import me.hawkweisman.alexandria.controllers.swagger.AlexandriaSwagger
+import me.hawkweisman.alexandria.model.{Book, Author}
+import me.hawkweisman.alexandria.model.Tables._
 
 import org.scalatest.{Inside, BeforeAndAfter, Matchers,OptionValues}
 import org.scalatra.test.scalatest._
 
 import org.json4s._
 import org.json4s.native.JsonMethods._
-
-import me.hawkweisman.alexandria.model.Book
-import me.hawkweisman.alexandria.model.Tables._
 
 import slick.driver.H2Driver.api._
 
@@ -435,6 +434,36 @@ class APISpec extends ScalatraWordSpec
               weight        = Some("2.5 pounds")
             )
           )
+        }
+      }
+    }
+  }
+  "The GET /authors/ route" when {
+    "the requested number of authors is less than the number of authors in the database" should {
+      "return all the authors in the database" in {
+        Await.ready( db.run(
+          authors += new Author("Donald", "E.", "Knuth")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Ronald", "L.", "Graham")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Oren", "Patashnik")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("John", "Miedema")
+        ), Duration.Inf)
+
+        get("/authors/") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 4
+          authors should contain allOf (
+            new Author("Donald", "E.", "Knuth"),
+            new Author("Ronald", "L.", "Graham"),
+            new Author("Oren", "Patashnik"),
+            new Author("John", "Miedema")
+            )
         }
       }
     }
