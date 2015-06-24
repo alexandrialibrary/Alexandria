@@ -139,7 +139,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     NotImplemented("This isn't done yet.")
   }
 
-  get("/books", operation(listBooks)) {
+  get("/books/?", operation(listBooks)) {
     val offset: Int = params.get("offset")
       .flatMap((p: String) => Try(p.toInt) toOption )
       .getOrElse(0)
@@ -162,7 +162,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     }
   }
 
-  post("/books", operation(createBook)) {
+  post("/books/?", operation(createBook)) {
     NotImplemented("This isn't done yet.")
   }
 
@@ -202,11 +202,11 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
         .required
   )
 
-  get("/authors/", operation(listAuthors)) {
+  get("/authors/?", operation(listAuthors)) {
     NotImplemented("This isn't done yet.")
   }
 
-  post("/authors/", operation(createAuthor)) {
+  post("/authors/?", operation(createAuthor)) {
     NotImplemented("This isn't done yet.")
   }
 
