@@ -40,9 +40,9 @@ class APISpec extends ScalatraWordSpec
     Await.ready(db run dropTablesAction, Duration.Inf)
   }
 
-  "The Books API" when {
-    "handling books by ISBN requests" should {
-      "correctly handle some example ISBN lookups" in {
+  "The GET /book/{isbn} route" when {
+    "the requested book is not in the database" should {
+      "add the book to the database and return it" in {
         // TODO: assume that the internet is available here
         get("/book/ISBN:9780980200447") {
           //info(body) //uncomment this if you need to look at the books that are happening
@@ -61,7 +61,9 @@ class APISpec extends ScalatraWordSpec
           }
         }
       }
-      "correctly handle a lookup for an ISBN that is already in the database" in {
+    }
+    "the requested book is already in the database" should {
+      "return the requested book" in {
         Await.ready(db.run(books += Book(
           isbn          = "ISBN:9780980200447",
           title         = "Slow reading",
@@ -90,11 +92,40 @@ class APISpec extends ScalatraWordSpec
         }
       }
     }
-    "handling requests for a list of books" should {
-      "return a list of books from the database" in {
-        // todo: finish
+  }
+  "The GET /books/ route" when {
+    "the requested number of books is greater than the number of books in the database" should {
+      "return all the books" in {
         Await.ready(db.run(
-          books ++= Seq(
+          books += Book(
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "by John Miedema.",
+              pages         = 92,
+              publishedDate = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            )
+          ), Duration.Inf)
+          Await.ready(db.run(
+            books += Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
+              publishedDate = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            )
+        ), Duration.Inf)
+
+        get("/books/") {
+          status should equal (200)
+          val books = parse(body).extract[Seq[Book]]
+          books should have length 2
+          books should contain (
             Book(
               isbn          = "ISBN:9780980200447",
               title         = "Slow reading",
@@ -104,7 +135,9 @@ class APISpec extends ScalatraWordSpec
               publishedDate = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
-            ),
+            )
+          )
+          books should contain (
             Book(
               isbn          = "ISBN:0201558025",
               title         = "Concrete mathematics",
@@ -115,7 +148,294 @@ class APISpec extends ScalatraWordSpec
               publisher     = "Addison-Wesley",
               weight        = None
             )
-        )), Duration.Inf)
+          )
+        }
+      }
+    }
+    "the requested number of books is less than the number of books in the database" should {
+      "return only the requested amount" in {
+        Await.ready(db.run(
+          books += Book(
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "by John Miedema.",
+              pages         = 92,
+              publishedDate = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            )
+          ), Duration.Inf)
+          Await.ready(db.run(
+            books += Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
+              publishedDate = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            )
+        ), Duration.Inf)
+        Await.ready(db.run(
+          books += Book(
+            isbn          = "ISBN:9780201896831",
+            title         = "The Art of Computer Programming, Vol. 1",
+            subtitle      = Some("Fundamental Algorithms"),
+            byline        = "by Donald E. Knuth.",
+            pages         = 672,
+            publishedDate = "1997",
+            publisher     = "Addison-Wesley",
+            weight        = Some("2.5 pounds")
+          )
+      ), Duration.Inf)
+      get("/books?offset=0&count=2") {
+        status should equal (200)
+        val books = parse(body).extract[Seq[Book]]
+        books should have length 2
+        books should contain (
+          Book(
+            isbn          = "ISBN:9780980200447",
+            title         = "Slow reading",
+            subtitle      = None,
+            byline        = "by John Miedema.",
+            pages         = 92,
+            publishedDate = "March 2009",
+            publisher     = "Litwin Books",
+            weight        = Some("1 grams")
+          )
+        )
+        books should contain (
+          Book(
+            isbn          = "ISBN:0201558025",
+            title         = "Concrete mathematics",
+            subtitle      = Some("a foundation for computer science"),
+            byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+            pages         = 657,
+            publishedDate = "1994",
+            publisher     = "Addison-Wesley",
+            weight        = None
+          )
+        )
+        }
+      }
+      "return the requested amount, starting at an offset" in {
+        Await.ready(db.run(
+          books += Book(
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "by John Miedema.",
+              pages         = 92,
+              publishedDate = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            )
+          ), Duration.Inf)
+          Await.ready(db.run(
+            books += Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
+              publishedDate = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            )
+        ), Duration.Inf)
+        Await.ready(db.run(
+          books += Book(
+            isbn          = "ISBN:9780201896831",
+            title         = "The Art of Computer Programming, Vol. 1",
+            subtitle      = Some("Fundamental Algorithms"),
+            byline        = "by Donald E. Knuth.",
+            pages         = 672,
+            publishedDate = "1997",
+            publisher     = "Addison-Wesley",
+            weight        = Some("2.5 pounds")
+          )
+      ), Duration.Inf)
+      get("/books?offset=1&count=2") {
+        status should equal (200)
+        val books = parse(body).extract[Seq[Book]]
+        books should have length 2
+        books should contain (
+          Book(
+            isbn          = "ISBN:9780201896831",
+            title         = "The Art of Computer Programming, Vol. 1",
+            subtitle      = Some("Fundamental Algorithms"),
+            byline        = "by Donald E. Knuth.",
+            pages         = 672,
+            publishedDate = "1997",
+            publisher     = "Addison-Wesley",
+            weight        = Some("2.5 pounds")
+          )
+        )
+        books should contain (
+          Book(
+            isbn          = "ISBN:0201558025",
+            title         = "Concrete mathematics",
+            subtitle      = Some("a foundation for computer science"),
+            byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+            pages         = 657,
+            publishedDate = "1994",
+            publisher     = "Addison-Wesley",
+            weight        = None
+          )
+        )
+        }
+      }
+    }
+    "the requested amount is negative" should {
+      "return all the books" in {
+        Await.ready(db.run(
+          books += Book(
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "by John Miedema.",
+              pages         = 92,
+              publishedDate = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            )
+          ), Duration.Inf)
+          Await.ready(db.run(
+            books += Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
+              publishedDate = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            )
+        ), Duration.Inf)
+        Await.ready(db.run(
+          books += Book(
+            isbn          = "ISBN:9780201896831",
+            title         = "The Art of Computer Programming, Vol. 1",
+            subtitle      = Some("Fundamental Algorithms"),
+            byline        = "by Donald E. Knuth.",
+            pages         = 672,
+            publishedDate = "1997",
+            publisher     = "Addison-Wesley",
+            weight        = Some("2.5 pounds")
+          )
+      ), Duration.Inf)
+
+        get("/books?offset=0&count=-1") {
+          status should equal (200)
+          val books = parse(body).extract[Seq[Book]]
+          books should have length 3
+          books should contain (
+            Book(
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "by John Miedema.",
+              pages         = 92,
+              publishedDate = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            )
+          )
+          books should contain (
+            Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
+              publishedDate = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            )
+          )
+          books should contain (
+            Book(
+              isbn          = "ISBN:9780201896831",
+              title         = "The Art of Computer Programming, Vol. 1",
+              subtitle      = Some("Fundamental Algorithms"),
+              byline        = "by Donald E. Knuth.",
+              pages         = 672,
+              publishedDate = "1997",
+              publisher     = "Addison-Wesley",
+              weight        = Some("2.5 pounds")
+            )
+          )
+        }
+      }
+      "return all the books, starting at an offset" in {
+        Await.ready(db.run(
+          books += Book(
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "by John Miedema.",
+              pages         = 92,
+              publishedDate = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            )
+          ), Duration.Inf)
+          Await.ready(db.run(
+            books += Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
+              publishedDate = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            )
+        ), Duration.Inf)
+        Await.ready(db.run(
+          books += Book(
+            isbn          = "ISBN:9780201896831",
+            title         = "The Art of Computer Programming, Vol. 1",
+            subtitle      = Some("Fundamental Algorithms"),
+            byline        = "by Donald E. Knuth.",
+            pages         = 672,
+            publishedDate = "1997",
+            publisher     = "Addison-Wesley",
+            weight        = Some("2.5 pounds")
+          )
+      ), Duration.Inf)
+
+        get("/books?offset=1&count=-1") {
+          status should equal (200)
+          val books = parse(body).extract[Seq[Book]]
+          books should have length 2
+          books should contain (
+            Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages         = 657,
+              publishedDate = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            )
+          )
+          books should contain (
+            Book(
+              isbn          = "ISBN:9780201896831",
+              title         = "The Art of Computer Programming, Vol. 1",
+              subtitle      = Some("Fundamental Algorithms"),
+              byline        = "by Donald E. Knuth.",
+              pages         = 672,
+              publishedDate = "1997",
+              publisher     = "Addison-Wesley",
+              weight        = Some("2.5 pounds")
+            )
+          )
+        }
       }
     }
   }
