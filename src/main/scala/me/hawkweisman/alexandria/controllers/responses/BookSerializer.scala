@@ -13,7 +13,7 @@ import model.Book
  * transforms `None`s to `null`s instead of removing them.
  *
  * @author Hawk Weisman
- * 
+ *
  * Created by hawk on 6/23/15.
  */
 object BookSerializer extends CustomSerializer[Book](implicit format => ({
@@ -32,14 +32,14 @@ object BookSerializer extends CustomSerializer[Book](implicit format => ({
       }
     )
   }, {
-    case Book(isbn,title,subtitle,byline,pages,publisher,publishedDate,weight) =>
-      ("isbn" -> isbn) ~
-        ("title" -> title) ~
-        ("subtitle" -> subtitle.getOrElse(null)) ~
-        ("byline" -> byline) ~
-        ("pages" -> pages) ~
-        ("publisher" -> publisher) ~
-        ("publishedDate" -> publishedDate) ~
-        ("weight" -> weight.getOrElse(null))
+    case book: Book =>
+      ("isbn" -> book.isbn) ~
+        ("title" -> book.title) ~
+        ("subtitle" -> book.subtitle.getOrElse(null)) ~
+        ("byline" -> book.byline) ~
+        ("pages" -> book.pages) ~
+        ("publisher" -> book.publisher) ~
+        ("publishedDate" -> book.publishedDate) ~
+        ("weight" -> book.weight.getOrElse(null))
   })
 )
