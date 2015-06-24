@@ -35,7 +35,7 @@ object AlexandriaBuild extends Build {
         "org.scalatest"                 %%  "scalatest"             % "2.2.4"   % "test",
         "org.json4s"                    %%  "json4s-native"         % "3.3.0.RC1",
         "net.databinder.dispatch"       %%  "dispatch-core"         % "0.11.2",
-        "me.hawkweisman"                %%  "util"                  % "v0.0.2-1-g885bd92.19",
+        "me.hawkweisman"                %%  "util"                  % "0.0.2-26b6cfb.36",
         "com.typesafe.slick"            %%  "slick"                 % slickVersion,
         "com.typesafe.scala-logging"    %%  "scala-logging"         % "3.1.0",
         "com.h2database"                %   "h2"                    % "1.3.166",

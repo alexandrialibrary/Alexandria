@@ -1,10 +1,11 @@
 package me.hawkweisman.alexandria
 package controllers
 
+import me.hawkweisman.util.RichException.makeRich
+
 import responses.{ModelResponseMessage,ErrorModel,BookSerializer}
 import model.Tables._
 import model.{ISBN, Book, Author}
-import util.RichException.makeRich
 
 import org.scalatra._
 import org.scalatra.json._
