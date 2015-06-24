@@ -439,7 +439,7 @@ class APISpec extends ScalatraWordSpec
     }
   }
   "The GET /authors/ route" when {
-    "the requested number of authors is less than the number of authors in the database" should {
+    "the requested number of authors is greater than the number of authors in the database" should {
       "return all the authors in the database" in {
         Await.ready( db.run(
           authors += new Author("Donald", "E.", "Knuth")
@@ -455,6 +455,84 @@ class APISpec extends ScalatraWordSpec
         ), Duration.Inf)
 
         get("/authors/") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 4
+          authors should contain allOf (
+            new Author("Donald", "E.", "Knuth"),
+            new Author("Ronald", "L.", "Graham"),
+            new Author("Oren", "Patashnik"),
+            new Author("John", "Miedema")
+            )
+        }
+      }
+    }
+    "the requested number of authors is less than the number of authors in the database" should {
+      "return the requested amount" in {
+        Await.ready( db.run(
+          authors += new Author("Donald", "E.", "Knuth")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Ronald", "L.", "Graham")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Oren", "Patashnik")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("John", "Miedema")
+        ), Duration.Inf)
+
+        get("/authors/?offset=0&count=2") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 2
+          authors should contain allOf (
+            new Author("Donald", "E.", "Knuth"),
+            new Author("Ronald", "L.", "Graham")
+            )
+        }
+      }
+      "return the requested amount, starting at a given offset" in {
+        Await.ready( db.run(
+          authors += new Author("Donald", "E.", "Knuth")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Ronald", "L.", "Graham")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Oren", "Patashnik")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("John", "Miedema")
+        ), Duration.Inf)
+
+        get("/authors/?offset=2&count=2") {
+          status should equal (200)
+          val authors = parse(body).extract[Seq[Author]]
+          authors should have length 2
+          authors should contain allOf (
+            new Author("Oren", "Patashnik"),
+            new Author("John", "Miedema")
+            )
+        }
+      }
+    }
+    "the requested number of authors is negative" should {
+      "return all the authors in the database" in {
+        Await.ready( db.run(
+          authors += new Author("Donald", "E.", "Knuth")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Ronald", "L.", "Graham")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("Oren", "Patashnik")
+        ), Duration.Inf)
+        Await.ready( db.run(
+          authors += new Author("John", "Miedema")
+        ), Duration.Inf)
+
+        get("/authors/?offset=0&count=-1") {
           status should equal (200)
           val authors = parse(body).extract[Seq[Author]]
           authors should have length 4
