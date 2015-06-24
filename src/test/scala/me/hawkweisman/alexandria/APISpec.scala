@@ -55,23 +55,22 @@ class APISpec extends ScalatraWordSpec
               byline shouldEqual "by John Miedema."
               pages shouldEqual 92
               publisher shouldEqual "Litwin Books"
+              publishedDate shouldEqual "March 2009"
+              weight shouldEqual "1 grams"
           }
         }
       }
       "correctly handle a lookup for an ISBN that is already in the database" in {
-        get("/book/ISBN:9780980200447") {
-          //info(body) //uncomment this if you need to look at the books that are happening
-          val parsedBook = parse(body).extract[Book]
-          inside (parsedBook) {
-            case Book(isbn, title,subtitle,byline,pages,publishedDate,publisher,weight) =>
-              isbn shouldEqual "ISBN:9780980200447"
-              title shouldEqual "Slow reading"
-              subtitle should not be 'defined
-              byline shouldEqual "by John Miedema."
-              pages shouldEqual 92
-              publisher shouldEqual "Litwin Books"
-          }
-        }
+        Await.ready(db.run(books += Book(
+          "ISBN:9780980200447",
+          "Slow reading",
+          None,
+          "by John Miedema.",
+          92,
+          "March 2009",
+          "Litwin Books",
+          "1 grams"
+        )), Duration.Inf)
         get("/book/ISBN:9780980200447") {
           //info(body) //uncomment this if you need to look at the books that are happening
           status should equal (200)
@@ -84,6 +83,8 @@ class APISpec extends ScalatraWordSpec
               byline shouldEqual "by John Miedema."
               pages shouldEqual 92
               publisher shouldEqual "Litwin Books"
+              publishedDate shouldEqual "March 2009"
+              weight shouldEqual "1 grams"
           }
         }
       }
