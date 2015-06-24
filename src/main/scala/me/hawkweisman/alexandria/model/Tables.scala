@@ -24,9 +24,13 @@ object Tables {
   ).create
 
   // DBIO Action which DESTROYS FUCKING EVERYTHING
-  val dropTablesAction = (
-    books.schema ++ loans.schema ++ users.schema ++ authors.schema ++ wrote.schema
-  ).drop
+  val dropTablesAction = DBIO.seq(
+    wrote.schema.drop,
+    deweys.schema.drop,
+    loans.schema.drop,
+    books.schema.drop,
+    users.schema.drop,
+    authors.schema.drop)
 
   //TODO: AUTH table for password hashes
 
@@ -89,6 +93,8 @@ object Tables {
     def * = (firstName,middleName,lastName) <> ((Author.apply _).tupled, Author.unapply)
 
     def books = wrote filter (_.authorID === id) flatMap (_.book)
+
+    def fullName = index("FULL_NAME", (firstName, middleName, lastName), unique = true)
 
   }
 
