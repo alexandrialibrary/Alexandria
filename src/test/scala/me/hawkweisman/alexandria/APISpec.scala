@@ -3,7 +3,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
 import me.hawkweisman.alexandria.controllers.APIController
 import me.hawkweisman.alexandria.controllers.swagger.AlexandriaSwagger
 
-import org.scalatest.{Inside, BeforeAndAfter, Matchers}
+import org.scalatest.{Inside, BeforeAndAfter, Matchers,OptionValues}
 import org.scalatra.test.scalatest._
 
 import org.json4s._
@@ -20,7 +20,8 @@ import scala.concurrent.duration._
 class APISpec extends ScalatraWordSpec
   with Matchers
   with Inside
-  with BeforeAndAfter {
+  with BeforeAndAfter
+  with OptionValues {
 
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
@@ -56,7 +57,7 @@ class APISpec extends ScalatraWordSpec
               pages shouldEqual 92
               publisher shouldEqual "Litwin Books"
               publishedDate shouldEqual "March 2009"
-              weight shouldEqual "1 grams"
+              weight.value shouldEqual "1 grams"
           }
         }
       }
@@ -69,7 +70,7 @@ class APISpec extends ScalatraWordSpec
           92,
           "March 2009",
           "Litwin Books",
-          "1 grams"
+          Some("1 grams")
         )), Duration.Inf)
         get("/book/ISBN:9780980200447") {
           //info(body) //uncomment this if you need to look at the books that are happening
@@ -84,9 +85,35 @@ class APISpec extends ScalatraWordSpec
               pages shouldEqual 92
               publisher shouldEqual "Litwin Books"
               publishedDate shouldEqual "March 2009"
-              weight shouldEqual "1 grams"
+              weight.value shouldEqual "1 grams"
           }
         }
+      }
+    }
+    "handling requests for a list of books" should {
+      "return a list of books from the database" in {
+        Await.ready(db.run(
+          books ++= Seq(
+            Book(
+              "ISBN:9780980200447",
+              "Slow reading",
+              None,
+              "by John Miedema.",
+              92,
+              "March 2009",
+              "Litwin Books",
+              Some("1 grams")),
+            Book(
+              isbn = "ISBN:0201558025",
+              title = "Concrete mathematics",
+              subtitle = Some("a foundation for computer science"),
+              byline = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
+              pages = 657,
+              publishedDate = "1994",
+              publisher = "Addison-Wesley",
+              weight = None
+            )
+        )), Duration.Inf)
       }
     }
   }
