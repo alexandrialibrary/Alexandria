@@ -107,6 +107,12 @@ paths:
       responses:
         204:
           description: Book deleted
+        404:
+          description: Matching book not found.
+        400:
+          description: Invalid ISBN
+          schema:
+            $ref: '#/definitions/ErrorModel'
   /authors:
     get:
       operationId: listAuthors
@@ -183,6 +189,20 @@ paths:
               $ref: '#/definitions/Author'
         404:
           description: Author not found
+    delete:
+      operationId: deleteAuthorByName
+      summary: Get a specific author by name.
+      parameters:
+        - name: name
+          description: The author's name
+          in: path
+          required: true
+          type: string
+      responses:
+        204:
+          description: Author deleted
+        404:
+          description: Matching author not found.
 
 definitions:
   Book:
