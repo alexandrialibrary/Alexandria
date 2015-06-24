@@ -205,6 +205,51 @@ paths:
           description: Author deleted
         404:
           description: Matching author not found.
+  /loan:
+    get:
+      operationId: getUserLoans
+      summary: Get a specific user's outstanding loans.
+      description: ""
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Books returned
+          schema:
+            title: Book
+            items:
+              $ref: '#/definitions/Book'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    post:
+      operationId: createLoan
+      summary: Create a new loan to the current user.
+      description: ""
+      produces:
+        - application/json
+      parameters:
+        - name: isbn
+          description: The ISBN of the book to checkout.
+          in: body
+          required: true
+          type: string
+      responses:
+        200:
+          description: Book checked out (loan returned)
+          schema:
+            title: Loan
+            items:
+              $ref: '#/definitions/Loan'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        409:
+          description: Already checked-out
+          schema:
+            $ref: '#/definitions/ErrorModel'
 
 definitions:
   Book:
@@ -237,6 +282,20 @@ definitions:
     properties:
       name:
         type: string
+  Loan:
+    properties:
+      user:
+        type: integer
+        format: int32
+      book:
+        type: integer
+        format: int32
+      checked_out_at:
+        type: string
+        format: dateTime
+      expires:
+        type: string
+        format: dateTime
   ErrorModel:
     required:
       - code
