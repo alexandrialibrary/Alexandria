@@ -260,7 +260,7 @@ definitions:
         type: string
       subtitle:
         type: string
-      byline:
+      by_line:
         type: string
       publisher:
         type: string
