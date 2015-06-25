@@ -1,2 +1,20 @@
-<div ng-view>
+<div ng-controller="BookListController as bookList">
+<table>
+	<thead>
+		<tr>
+			<td>ISBN</td>
+			<td>Title</td>
+			<td>Author</td>
+			<td>Pages (not the one by Apple)</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="book in bookList.books">
+			<td>{{book.isbn}}</td>
+			<td>{{book.title}}</td>
+			<td>{{book.by_line}}</td>
+			<td>{{book.pages}}</td>
+		</tr>
+	</tbody>
+</table>
 </div>
