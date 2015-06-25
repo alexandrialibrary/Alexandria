@@ -20,7 +20,12 @@
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<!-- TODO: this does nothing  -->
-			<li><button type="button" class="btn btn-default navbar-btn">Sign in</button></li>
+			<li>
+				<button type="button" class="btn btn-default navbar-btn">
+					<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					Sign in
+				</button>
+				</li>
 		</ul>
 	</div><!--/.nav-collapse -->
 </div><!-- /.container -->
