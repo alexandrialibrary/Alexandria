@@ -17,12 +17,19 @@
 
         <!-- Link in Bootstrap from MaxCDN -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-       <!-- Link in Alexandria styles -->
+        <!-- Link in Alexandria styles -->
         <link rel="stylesheet" href="compiled/styles.css">
+
         <script src="compiled/<%= appScript %>.js"></script>
         <title><%= title%></title>
     </head>
     <body ng-app="<%= appScript %>">
-      <%= unescape(body) %>
+        <%= unescape(body) %>
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <!-- Latest compiled and minified Bootstrap JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     </body>
 </html>
