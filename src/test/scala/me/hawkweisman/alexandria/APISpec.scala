@@ -30,16 +30,10 @@ class APISpec extends ScalatraWordSpec
   addServlet(new APIController(db), "/*")
 
   def createAuthors() = {
-    Await.ready( db.run(
-        authors += new Author("John", "Miedema")
-      ), Duration.Inf)
-    Await.ready( db.run(
-      authors += new Author("Donald", "E.", "Knuth")
-    ), Duration.Inf)
-    Await.ready( db.run(
-      authors += new Author("Ronald", "L.", "Graham")
-    ), Duration.Inf)
-    Await.ready( db.run(
+    Await.ready( db run DBIO.seq(
+      authors += new Author("John", "Miedema"),
+      authors += new Author("Donald", "E.", "Knuth"),
+      authors += new Author("Ronald", "L.", "Graham"),
       authors += new Author("Oren", "Patashnik")
     ), Duration.Inf)
   }
