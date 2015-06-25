@@ -5,15 +5,18 @@
     xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd"
     >
     <group name="alexandria-app">
-        <js>/assets/coffee/alexandria-app.coffee</js>
+        <js>/assets/coffee/alexandria-app/*.coffee</js>
+        <js>/assets/js/alexandria-app/*.js</js>
     </group>
 
     <group name="alexandria-admin">
-        <js>/assets/coffee/alexandria-admin.coffee</js>
+        <js>/assets/coffee/alexandria-admin/*.coffee</js>
+        <js>/assets/js/alexandria-dmin/*.js</js>
     </group>
 
     <group name="scripts">
         <js>/assets/js/*.js</js>
+        <js>/assets/coffee/*.coffee</js>
     </group>
 
     <group name="styles">
