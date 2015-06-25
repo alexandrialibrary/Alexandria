@@ -1,4 +1,4 @@
-<div ng-controller="BookListController as bookList">
+<div ng-controller="BookListController">
 <table>
 	<thead>
 		<tr>
@@ -12,7 +12,7 @@
 		<tr ng-repeat="book in bookList.books">
 			<td>{{book.isbn}}</td>
 			<td>{{book.title}}</td>
-			<td>{{book.by_line}}</td>
+			<td>{{book.byline}}</td>
 			<td>{{book.pages}}</td>
 		</tr>
 	</tbody>
