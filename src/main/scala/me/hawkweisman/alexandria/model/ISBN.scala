@@ -6,6 +6,7 @@ import scala.util.{ Try, Success, Failure }
 import dispatch._, Defaults._
 
 import me.hawkweisman.util.collection.RepeatableSeq
+import me.hawkweisman.util.concurrent.tryToFuture
 
 import org.json4s.JsonAST.JValue
 import org.json4s.native.JsonMethods._
@@ -40,7 +41,7 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
   }
 
   lazy val authors: Future[List[Author]] = lookup map { Author fromJson _ }
-  lazy val book: Future[Book] = lookup map { Book.fromJson(_, this) }
+  lazy val book: Future[Book] = lookup flatMap { Book.fromJson(_, this) }
   /**
    * Calculate the check value for an ISBN-13 number
    * @return
