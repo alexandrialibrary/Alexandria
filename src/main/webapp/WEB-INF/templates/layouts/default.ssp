@@ -5,14 +5,19 @@
 <!doctype html>
 <html lang="en">
     <head>
-        
+
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <!-- The above 3 meta tags *must* come first in the head,
+            any other head content must come *after* these tags -->
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-resource.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-route.min.js"> </script>
+
+        <!-- Link in Bootstrap from MaxCDN -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+       <!-- Link in Alexandria styles -->
         <link rel="stylesheet" href="compiled/styles.css">
         <script src="compiled/<%= appScript %>.js"></script>
         <title><%= title%></title>

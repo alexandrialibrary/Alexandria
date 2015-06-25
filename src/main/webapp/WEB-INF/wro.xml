@@ -11,7 +11,7 @@
 
     <group name="alexandria-admin">
         <js>/assets/coffee/alexandria-admin/*.coffee</js>
-        <js>/assets/js/alexandria-dmin/*.js</js>
+        <js>/assets/js/alexandria-admin/*.js</js>
     </group>
 
     <group name="scripts">
