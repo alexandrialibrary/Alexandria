@@ -1,6 +1,7 @@
 import me.hawkweisman.alexandria._
 import me.hawkweisman.alexandria.controllers._
 import me.hawkweisman.alexandria.controllers.swagger._
+import me.hawkweisman.alexandria.model.Tables._
 
 import org.scalatra._
 import javax.servlet.ServletContext
@@ -8,7 +9,14 @@ import javax.servlet.ServletContext
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.typesafe.scalalogging.LazyLogging
 
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Try,Success,Failure}
+
 import slick.driver.H2Driver.api._
+import slick.jdbc.meta.MTable
 
 class ScalatraBootstrap extends LifeCycle
   with LazyLogging {
@@ -22,6 +30,9 @@ class ScalatraBootstrap extends LifeCycle
   override def init(context: ServletContext) {
     val db = Database.forDataSource(cpds)     // create a Database which uses the DataSource
     logger info "Created database"
+    // create tables
+    if (Await.result(db.run(MTable.getTables), Duration.Inf).toList.isEmpty)
+      Await.ready(db run createSchemaAction, Duration.Inf)
     // mount the admin controller
     context mount (AdminController(db), "/admin/*")
     logger info "Mounted AdminController at /admin/"

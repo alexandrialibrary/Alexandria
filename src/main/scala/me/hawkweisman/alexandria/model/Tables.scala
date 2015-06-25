@@ -3,7 +3,6 @@ package model
 
 import java.sql.Date
 
-
 import slick.driver.H2Driver.api._
 
 /**
