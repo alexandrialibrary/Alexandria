@@ -444,6 +444,8 @@ class APISpec extends ScalatraWordSpec
 
         get("/authors/") {
           status should equal (200)
+
+          info(body)
           val authors = parse(body).extract[Seq[Author]]
           authors should have length 4
           authors should contain allOf (
@@ -461,6 +463,8 @@ class APISpec extends ScalatraWordSpec
 
         get("/authors/?offset=0&count=2") {
           status should equal (200)
+
+          info(body)
           val authors = parse(body).extract[Seq[Author]]
           authors should have length 2
           authors should contain allOf (
@@ -474,6 +478,8 @@ class APISpec extends ScalatraWordSpec
 
         get("/authors/?offset=2&count=2") {
           status should equal (200)
+
+          info(body)
           val authors = parse(body).extract[Seq[Author]]
           authors should have length 2
           authors should contain allOf (
@@ -489,6 +495,7 @@ class APISpec extends ScalatraWordSpec
 
         get("/authors/?offset=0&count=-1") {
           status should equal (200)
+          info(body)
           val authors = parse(body).extract[Seq[Author]]
           authors should have length 4
           authors should contain allOf (
