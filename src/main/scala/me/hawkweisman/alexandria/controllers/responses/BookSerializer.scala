@@ -35,11 +35,11 @@ object BookSerializer extends CustomSerializer[Book](implicit format => ({
     case book: Book =>
       ("isbn" -> book.isbn) ~
         ("title" -> book.title) ~
-        ("subtitle" -> book.subtitle.getOrElse(null)) ~
+        ("subtitle" -> book.subtitle.orNull) ~
         ("byline" -> book.byline) ~
         ("pages" -> book.pages) ~
         ("publisher" -> book.publisher) ~
         ("published_date" -> book.published_date) ~
-        ("weight" -> book.weight.getOrElse(null))
+        ("weight" -> book.weight.orNull)
   })
 )

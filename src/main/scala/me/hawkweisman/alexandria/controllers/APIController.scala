@@ -3,7 +3,7 @@ package controllers
 
 import me.hawkweisman.util.RichException.makeRich
 
-import responses.{ModelResponseMessage,ErrorModel,BookSerializer}
+import responses.{ModelResponseMessage,ErrorModel,BookSerializer,AuthorSerializer}
 import model.Tables._
 import model.{ISBN, Book, Author}
 
@@ -37,7 +37,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
 
   protected implicit def executor: ExecutionContext = global
   // Sets up automatic case class to JSON output serialization
-  protected implicit lazy val jsonFormats: Formats = DefaultFormats + BookSerializer
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats + BookSerializer + AuthorSerializer
 
   // "description" string for Swagger
   override protected val applicationName: Option[String] = Some("Books")

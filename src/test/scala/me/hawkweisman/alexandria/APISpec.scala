@@ -446,13 +446,16 @@ class APISpec extends ScalatraWordSpec
           status should equal (200)
 
           info(body)
-          val authors = parse(body).extract[Seq[Author]]
+          val JArray(authorList) = parse(body)
+          val authors = authorList map { value: JValue =>
+            (value \\ "name").extract[String]
+          }
           authors should have length 4
           authors should contain allOf (
-            new Author("John", "Miedema"),
-            new Author("Donald", "E.", "Knuth"),
-            new Author("Ronald", "L.", "Graham"),
-            new Author("Oren", "Patashnik")
+            "Donald E. Knuth",
+            "Ronald L. Graham",
+            "Oren Patashnik",
+            "John Miedema"
             )
         }
       }
@@ -465,11 +468,14 @@ class APISpec extends ScalatraWordSpec
           status should equal (200)
 
           info(body)
-          val authors = parse(body).extract[Seq[Author]]
+          val JArray(authorList) = parse(body)
+          val authors = authorList map { value: JValue =>
+            (value \\ "name").extract[String]
+          }
           authors should have length 2
           authors should contain allOf (
-            new Author("John", "Miedema"),
-            new Author("Donald", "E.", "Knuth")
+            "John Miedema",
+            "Donald E. Knuth"
             )
         }
       }
@@ -480,11 +486,14 @@ class APISpec extends ScalatraWordSpec
           status should equal (200)
 
           info(body)
-          val authors = parse(body).extract[Seq[Author]]
+          val JArray(authorList) = parse(body)
+          val authors = authorList map { value: JValue =>
+            (value \\ "name").extract[String]
+          }
           authors should have length 2
           authors should contain allOf (
-             new Author("Ronald", "L.", "Graham"),
-            new Author("Oren", "Patashnik")
+            "Ronald L. Graham",
+            "Oren Patashnik"
             )
         }
       }
@@ -496,13 +505,16 @@ class APISpec extends ScalatraWordSpec
         get("/authors/?offset=0&count=-1") {
           status should equal (200)
           info(body)
-          val authors = parse(body).extract[Seq[Author]]
+          val JArray(authorList) = parse(body)
+          val authors = authorList map { value: JValue =>
+            (value \\ "name").extract[String]
+          }
           authors should have length 4
           authors should contain allOf (
-            new Author("Donald", "E.", "Knuth"),
-            new Author("Ronald", "L.", "Graham"),
-            new Author("Oren", "Patashnik"),
-            new Author("John", "Miedema")
+            "Donald E. Knuth",
+            "Ronald L. Graham",
+            "Oren Patashnik",
+            "John Miedema"
             )
         }
       }
