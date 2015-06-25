@@ -26,7 +26,7 @@ object BookSerializer extends CustomSerializer[Book](implicit format => ({
       byline = (json \ "byline").extract[String],
       pages = (json \ "pages").extract[Int],
       publisher = (json \ "publisher").extract[String],
-      publishedDate = (json \ "publishedDate").extract[String],
+      published_date = (json \ "published_date").extract[String],
       weight = (json \ "weight").toOption map {
         _.extract[String]
       }
@@ -39,7 +39,7 @@ object BookSerializer extends CustomSerializer[Book](implicit format => ({
         ("byline" -> book.byline) ~
         ("pages" -> book.pages) ~
         ("publisher" -> book.publisher) ~
-        ("publishedDate" -> book.publishedDate) ~
+        ("published_date" -> book.published_date) ~
         ("weight" -> book.weight.getOrElse(null))
   })
 )

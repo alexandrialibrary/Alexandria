@@ -47,14 +47,14 @@ class APISpec extends ScalatraWordSpec
           status should equal (201)
           val parsedBook = parse(body).extract[Book]
           inside (parsedBook) {
-            case Book(isbn, title,subtitle,byline,pages,publishedDate,publisher,weight) =>
+            case Book(isbn, title,subtitle,byline,pages,published_date,publisher,weight) =>
               isbn shouldEqual "ISBN:9780980200447"
               title shouldEqual "Slow reading"
               subtitle should not be 'defined
               byline shouldEqual "by John Miedema."
               pages shouldEqual 92
               publisher shouldEqual "Litwin Books"
-              publishedDate shouldEqual "March 2009"
+              published_date shouldEqual "March 2009"
               weight.value shouldEqual "1 grams"
           }
         }
@@ -68,7 +68,7 @@ class APISpec extends ScalatraWordSpec
           subtitle      = None,
           byline        = "by John Miedema.",
           pages         = 92,
-          publishedDate = "March 2009",
+          published_date = "March 2009",
           publisher     = "Litwin Books",
           weight        = Some("1 grams")
         )), Duration.Inf)
@@ -77,14 +77,14 @@ class APISpec extends ScalatraWordSpec
           status should equal (200)
           val parsedBook = parse(body).extract[Book]
           inside (parsedBook) {
-            case Book(isbn, title,subtitle,byline,pages,publishedDate,publisher,weight) =>
+            case Book(isbn, title,subtitle,byline,pages,published_date,publisher,weight) =>
               isbn shouldEqual "ISBN:9780980200447"
               title shouldEqual "Slow reading"
               subtitle should not be 'defined
               byline shouldEqual "by John Miedema."
               pages shouldEqual 92
               publisher shouldEqual "Litwin Books"
-              publishedDate shouldEqual "March 2009"
+              published_date shouldEqual "March 2009"
               weight.value shouldEqual "1 grams"
           }
         }
@@ -101,7 +101,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = None,
               byline        = "by John Miedema.",
               pages         = 92,
-              publishedDate = "March 2009",
+              published_date = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
@@ -113,7 +113,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -130,7 +130,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = None,
               byline        = "by John Miedema.",
               pages         = 92,
-              publishedDate = "March 2009",
+              published_date = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
@@ -142,7 +142,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -159,7 +159,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = None,
               byline        = "by John Miedema.",
               pages         = 92,
-              publishedDate = "March 2009",
+              published_date = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
@@ -171,7 +171,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -183,7 +183,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = Some("Fundamental Algorithms"),
             byline        = "by Donald E. Knuth.",
             pages         = 672,
-            publishedDate = "1997",
+            published_date = "1997",
             publisher     = "Addison-Wesley",
             weight        = Some("2.5 pounds")
           )
@@ -199,7 +199,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = None,
             byline        = "by John Miedema.",
             pages         = 92,
-            publishedDate = "March 2009",
+            published_date = "March 2009",
             publisher     = "Litwin Books",
             weight        = Some("1 grams")
           )
@@ -211,7 +211,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = Some("a foundation for computer science"),
             byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
             pages         = 657,
-            publishedDate = "1994",
+            published_date = "1994",
             publisher     = "Addison-Wesley",
             weight        = None
           )
@@ -226,7 +226,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = None,
               byline        = "by John Miedema.",
               pages         = 92,
-              publishedDate = "March 2009",
+              published_date = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
@@ -238,7 +238,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -250,7 +250,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = Some("Fundamental Algorithms"),
             byline        = "by Donald E. Knuth.",
             pages         = 672,
-            publishedDate = "1997",
+            published_date = "1997",
             publisher     = "Addison-Wesley",
             weight        = Some("2.5 pounds")
           )
@@ -266,7 +266,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = Some("Fundamental Algorithms"),
             byline        = "by Donald E. Knuth.",
             pages         = 672,
-            publishedDate = "1997",
+            published_date = "1997",
             publisher     = "Addison-Wesley",
             weight        = Some("2.5 pounds")
           )
@@ -278,7 +278,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = Some("a foundation for computer science"),
             byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
             pages         = 657,
-            publishedDate = "1994",
+            published_date = "1994",
             publisher     = "Addison-Wesley",
             weight        = None
           )
@@ -295,7 +295,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = None,
               byline        = "by John Miedema.",
               pages         = 92,
-              publishedDate = "March 2009",
+              published_date = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
@@ -307,7 +307,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -319,7 +319,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = Some("Fundamental Algorithms"),
             byline        = "by Donald E. Knuth.",
             pages         = 672,
-            publishedDate = "1997",
+            published_date = "1997",
             publisher     = "Addison-Wesley",
             weight        = Some("2.5 pounds")
           )
@@ -336,7 +336,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = None,
               byline        = "by John Miedema.",
               pages         = 92,
-              publishedDate = "March 2009",
+              published_date = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
@@ -348,7 +348,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -360,7 +360,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("Fundamental Algorithms"),
               byline        = "by Donald E. Knuth.",
               pages         = 672,
-              publishedDate = "1997",
+              published_date = "1997",
               publisher     = "Addison-Wesley",
               weight        = Some("2.5 pounds")
             )
@@ -375,7 +375,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = None,
               byline        = "by John Miedema.",
               pages         = 92,
-              publishedDate = "March 2009",
+              published_date = "March 2009",
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
@@ -387,7 +387,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -399,7 +399,7 @@ class APISpec extends ScalatraWordSpec
             subtitle      = Some("Fundamental Algorithms"),
             byline        = "by Donald E. Knuth.",
             pages         = 672,
-            publishedDate = "1997",
+            published_date = "1997",
             publisher     = "Addison-Wesley",
             weight        = Some("2.5 pounds")
           )
@@ -416,7 +416,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("a foundation for computer science"),
               byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik.",
               pages         = 657,
-              publishedDate = "1994",
+              published_date = "1994",
               publisher     = "Addison-Wesley",
               weight        = None
             )
@@ -428,7 +428,7 @@ class APISpec extends ScalatraWordSpec
               subtitle      = Some("Fundamental Algorithms"),
               byline        = "by Donald E. Knuth.",
               pages         = 672,
-              publishedDate = "1997",
+              published_date = "1997",
               publisher     = "Addison-Wesley",
               weight        = Some("2.5 pounds")
             )

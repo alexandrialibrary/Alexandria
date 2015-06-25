@@ -14,7 +14,7 @@ case class Book(
   subtitle: Option[String],
   byline: String,
   pages: Int,
-  publishedDate: String,   // "A library is just a box with strings in it" -- Hawk
+  published_date: String,   // "A library is just a box with strings in it" -- Hawk
   publisher: String,
   weight: Option[String]
   ) {
