@@ -1,4 +1,4 @@
-<div ng-controller="BookListController as bookList">
+<div ng-controller="BookListCtrl as booksList">
 <table>
 	<thead>
 		<tr>
@@ -9,10 +9,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="book in bookList.books">
+		<tr ng-repeat="book in booksList.books">
 			<td>{{book.isbn}}</td>
 			<td>{{book.title}}</td>
-			<td>{{book.by_line}}</td>
+			<td>{{book.byline}}</td>
 			<td>{{book.pages}}</td>
 		</tr>
 	</tbody>
