@@ -16,14 +16,14 @@ class JsonSpec extends WordSpec
   "The Book object" when {
     "creating Books from JSON" should {
       "parse a sample JSON blob correctly" in {
-        val book = Book.fromJson(json, isbn)
+        val book = Book.fromJson(json, isbn).success.value
 
         book.title shouldEqual "Slow reading"
         book.weight.value shouldEqual "1 grams"
         book.isbn shouldBe isbn.toString
         book.pages shouldEqual 92
         book.publisher shouldEqual "Litwin Books"
-        book.byline shouldEqual "by John Miedema."
+        book.byline shouldEqual "John Miedema"
       }
     }
   }
