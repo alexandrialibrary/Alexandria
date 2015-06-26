@@ -44,6 +44,7 @@ class APISpec extends ScalatraWordSpec
         // TODO: assume that the internet is available here
         get("/book/ISBN:9780980200447") {
           //info(body) //uncomment this if you need to look at the books that are happening
+          assume(status != 504, "Test gateway timed out")
           status should equal (201)
           val parsedBook = parse(body).extract[Book]
           inside (parsedBook) {
@@ -73,6 +74,7 @@ class APISpec extends ScalatraWordSpec
           weight        = Some("1 grams")
         )), Duration.Inf)
         get("/book/ISBN:9780980200447") {
+          assume(status != 504, "Test gateway timed out")
           //info(body) //uncomment this if you need to look at the books that are happening
           status should equal (200)
           val parsedBook = parse(body).extract[Book]
@@ -120,6 +122,7 @@ class APISpec extends ScalatraWordSpec
         ), Duration.Inf)
 
         get("/books/") {
+          assume(status != 504, "Test gateway timed out")
           status should equal (200)
           val books = parse(body).extract[Seq[Book]]
           books should have length 2
@@ -189,6 +192,7 @@ class APISpec extends ScalatraWordSpec
           )
       ), Duration.Inf)
       get("/books?offset=0&count=2") {
+        assume(status != 504, "Test gateway timed out")
         status should equal (200)
         val books = parse(body).extract[Seq[Book]]
         books should have length 2
@@ -256,6 +260,7 @@ class APISpec extends ScalatraWordSpec
           )
       ), Duration.Inf)
       get("/books?offset=1&count=2") {
+        assume(status != 504, "Test gateway timed out")
         status should equal (200)
         val books = parse(body).extract[Seq[Book]]
         books should have length 2
@@ -326,6 +331,7 @@ class APISpec extends ScalatraWordSpec
       ), Duration.Inf)
 
         get("/books?offset=0&count=-1") {
+          assume(status != 504, "Test gateway timed out")
           status should equal (200)
           val books = parse(body).extract[Seq[Book]]
           books should have length 3
@@ -406,6 +412,7 @@ class APISpec extends ScalatraWordSpec
       ), Duration.Inf)
 
         get("/books?offset=1&count=-1") {
+          assume(status != 504, "Test gateway timed out")
           status should equal (200)
           val books = parse(body).extract[Seq[Book]]
           books should have length 2
@@ -444,8 +451,8 @@ class APISpec extends ScalatraWordSpec
 
         get("/authors/") {
           status should equal (200)
-
-          info(body)
+          assume(status != 504, "Test gateway timed out")
+          // info(body)
           val JArray(authorList) = parse(body)
           val authors = authorList map { value: JValue =>
             (value \\ "name").extract[String]
@@ -465,6 +472,7 @@ class APISpec extends ScalatraWordSpec
         createAuthors()
 
         get("/authors/?offset=0&count=2") {
+          assume(status != 504, "Test gateway timed out")
           status should equal (200)
 
           info(body)
@@ -483,9 +491,9 @@ class APISpec extends ScalatraWordSpec
         createAuthors()
 
         get("/authors/?offset=2&count=2") {
+          assume(status != 504, "Test gateway timed out")
           status should equal (200)
-
-          info(body)
+          // info(body)
           val JArray(authorList) = parse(body)
           val authors = authorList map { value: JValue =>
             (value \\ "name").extract[String]
@@ -503,8 +511,9 @@ class APISpec extends ScalatraWordSpec
         createAuthors()
 
         get("/authors/?offset=0&count=-1") {
+          assume(status != 504, "Test gateway timed out")
           status should equal (200)
-          info(body)
+          // info(body)
           val JArray(authorList) = parse(body)
           val authors = authorList map { value: JValue =>
             (value \\ "name").extract[String]
