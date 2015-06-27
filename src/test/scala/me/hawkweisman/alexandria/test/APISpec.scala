@@ -4,6 +4,7 @@ package test
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import controllers.APIController
 import controllers.swagger.AlexandriaSwagger
+import tags.{InternetTest, DbTest}
 import model.Tables._
 import model.{Author, Book}
 
@@ -41,7 +42,7 @@ class APISpec extends ScalatraWordSpec
 
   "The GET /book/{isbn} route" when {
     "the requested book is not in the database" should {
-      "add the book to the database and return it" in {
+      "add the book to the database and return it" taggedAs(DbTest, InternetTest) in {
         // TODO: assume that the internet is available here
         get("/book/ISBN:9780980200447") {
           //info(body) //uncomment this if you need to look at the books that are happening
@@ -63,7 +64,7 @@ class APISpec extends ScalatraWordSpec
       }
     }
     "the requested book is already in the database" should {
-      "return the requested book" in {
+      "return the requested book" taggedAs(DbTest) in {
         Await.ready(db.run(books += Book(
           isbn          = "ISBN:9780980200447",
           title         = "Slow reading",
@@ -96,7 +97,7 @@ class APISpec extends ScalatraWordSpec
   }
   "The GET /books/ route" when {
     "the requested number of books is greater than the number of books in the database" should {
-      "return all the books" in {
+      "return all the books" taggedAs(DbTest) in {
         Await.ready(db.run(
           books += Book(
               isbn          = "ISBN:9780980200447",
@@ -155,7 +156,7 @@ class APISpec extends ScalatraWordSpec
       }
     }
     "the requested number of books is less than the number of books in the database" should {
-      "return only the requested amount" in {
+      "return only the requested amount" taggedAs DbTest in {
         Await.ready(db.run(
           books += Book(
               isbn          = "ISBN:9780980200447",
@@ -223,7 +224,7 @@ class APISpec extends ScalatraWordSpec
         )
         }
       }
-      "return the requested amount, starting at an offset" in {
+      "return the requested amount, starting at an offset" taggedAs DbTest in {
         Await.ready(db.run(
           books += Book(
               isbn          = "ISBN:9780980200447",
@@ -293,7 +294,7 @@ class APISpec extends ScalatraWordSpec
       }
     }
     "the requested amount is negative" should {
-      "return all the books" in {
+      "return all the books" taggedAs DbTest in {
         Await.ready(db.run(
           books += Book(
               isbn          = "ISBN:9780980200447",
@@ -374,7 +375,7 @@ class APISpec extends ScalatraWordSpec
           )
         }
       }
-      "return all the books, starting at an offset" in {
+      "return all the books, starting at an offset" taggedAs DbTest in {
         Await.ready(db.run(
           books += Book(
               isbn          = "ISBN:9780980200447",
@@ -447,7 +448,7 @@ class APISpec extends ScalatraWordSpec
   }
   "The GET /authors/ route" when {
     "the requested number of authors is greater than the number of authors in the database" should {
-      "return all the authors in the database" in {
+      "return all the authors in the database" taggedAs DbTest in {
         createAuthors()
 
         get("/authors/") {
@@ -469,7 +470,7 @@ class APISpec extends ScalatraWordSpec
       }
     }
     "the requested number of authors is less than the number of authors in the database" should {
-      "return the requested amount" in {
+      "return the requested amount" taggedAs DbTest in {
         createAuthors()
 
         get("/authors/?offset=0&count=2") {
@@ -488,7 +489,7 @@ class APISpec extends ScalatraWordSpec
             )
         }
       }
-      "return the requested amount, starting at a given offset" in {
+      "return the requested amount, starting at a given offset" taggedAs DbTest in {
         createAuthors()
 
         get("/authors/?offset=2&count=2") {
@@ -508,7 +509,7 @@ class APISpec extends ScalatraWordSpec
       }
     }
     "the requested number of authors is negative" should {
-      "return all the authors in the database" in {
+      "return all the authors in the database" taggedAs DbTest in {
         createAuthors()
 
         get("/authors/?offset=0&count=-1") {
