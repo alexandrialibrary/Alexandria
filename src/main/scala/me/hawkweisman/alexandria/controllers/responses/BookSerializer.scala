@@ -13,6 +13,10 @@ import model.Book
  * transforms `None`s to `null`s instead of removing them.
  *
  * @author Hawk Weisman
+ * @since v0.1.0
+ *
+ * @see [[model.Book]]
+ * @see [[org.json4s.CustomSerializer]]
  *
  * Created by hawk on 6/23/15.
  */

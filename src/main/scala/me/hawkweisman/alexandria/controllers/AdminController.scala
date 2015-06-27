@@ -24,6 +24,7 @@ import scala.concurrent.duration._
  * the admin app page.
  *
  * @author Hawk Weisman
+ * @since v0.1.0
  */
 case class AdminController(db: Database) extends AlexandriaStack
   with NativeJsonSupport

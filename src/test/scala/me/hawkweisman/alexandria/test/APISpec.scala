@@ -536,5 +536,6 @@ class APISpec extends ScalatraWordSpec
       }
     }
   }
+  "The POST /authors/ route"
 
 }

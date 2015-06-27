@@ -29,6 +29,7 @@ import slick.driver.H2Driver.api._
  * books and authors APIs.
  *
  * @author Hawk Weisman
+ * @since v0.1.0
  */
 case class APIController(db: Database)(implicit val swagger: Swagger) extends AlexandriaStack
   with NativeJsonSupport

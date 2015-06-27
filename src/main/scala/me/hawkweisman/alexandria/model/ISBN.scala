@@ -1,6 +1,7 @@
 package me.hawkweisman.alexandria
 package model
 
+import scala.language.postfixOps
 import scala.util.{ Try, Success, Failure }
 
 import dispatch._, Defaults._
@@ -11,15 +12,44 @@ import me.hawkweisman.util.concurrent.tryToFuture
 import org.json4s.JsonAST.JValue
 import org.json4s.native.JsonMethods._
 
+/**
+ * Internal representation for an ISBN.
+ *
+ * Handles conversion between ISBN-10 and ISBN-13, ISBN validation, and looking up ISBNs
+ * from OpenLibrary.
+ *
+ * TODO: consider representing each part of the number as an integer to make these
+ *       take up less memory.
+ *
+ * @param group The group component of the ISBN
+ * @param pub   The publisher component of the ISBN
+ * @param title The title component of the ISBN
+ * @param prefix The prefix component of the ISBN (ISBN-13 only)
+ *
+ * @author Hawk Weisman
+ * @since v0.1.0
+ */
 case class ISBN(group: String,pub: String,title: String, prefix: Option[String]) {
 
-  def query = host("openlibrary.org").secure / "api" / "books" <<?Map(
+  /**
+   * The query for looking up the book's data from the OpenLibrary API.
+   *
+   * This is lazy evaluated since there's no need to look up the same query
+   * twice.
+   *
+   * @return the result of the query
+   */
+  protected lazy val query = host("openlibrary.org").secure / "api" / "books" <<?Map(
     "jscmd" -> "data",
     "format" -> "json",
     "bibkeys" -> format)
 
   /**
    * Format the ISBN as a [[String]] suitable for printing
+   *
+   * This is lazy evaluated since there's no need to look up the same query
+   * twice.
+   *
    * @return the ISBN formatted as a [[String]]
    */
   lazy val format: String = prefix match {
@@ -34,17 +64,27 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
   /**
    * Attempt to look up the book metadata for this ISBN.
    * Book metadata comes from the OpenLibrary API
-   * @return [[Success]] containing a [[Book]] if a book was found for this ISBN,
+   *
+   * TODO: add fallback data sources if OpenLibrary doesn't have the book
+   *
+   * @return A [[scala.concurrent.Future Future]] on the parsed JSON
+   *         returned by the OpenLibrary API.
    */
   private lazy val lookup: Future[JValue] = Http(query OK as.String) map {
     (resp) => parse(resp)
   }
 
+  /**
+   * Get the authors for a given ISBN from OpenLibrary
+   */
   lazy val authors: Future[List[Author]] = lookup map { Author fromJson }
+  /**
+   * Get the book data for a given ISBN from OpenLibrary
+   */
   lazy val book: Future[Book] = lookup flatMap { Book.fromJson(_, this) }
   /**
    * Calculate the check value for an ISBN-13 number
-   * @return
+   * @return the check value as an Int
    */
   lazy val isbn13CheckValue: Int = {
     val v: Seq[(Char,Int)] = s"${prefix.getOrElse("")}$group$pub$title"
@@ -55,6 +95,10 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
     10 - (i.sum % 10)
   }
 
+  /**
+  * Calculate the check value for an ISBN-10 number
+  * @return the check value as an Int
+  */
   lazy val isbn10CheckValue: Int = {
     val v: Seq[(Char,Int)] = s"$group$pub$title" zip (10 until 1 by -1)
     val i: Seq[Int] = for {
@@ -66,6 +110,12 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
   override def toString: String = format
 
 }
+
+/**
+ * Companion object for ISBNs
+ *
+ * @author Hawk Weisman
+ */
 object ISBN {
 
   val isbn13 = ("""^(?:ISBN(?:-13)?:?\ ?)?""" + // Optional ISBN/ISBN13 identifier

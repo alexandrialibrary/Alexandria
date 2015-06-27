@@ -8,6 +8,7 @@ import slick.driver.H2Driver.api.Database
  * This should only serve one html page.
  *
  * @author Hawk Weisman
+ * @since v0.1.0
  */
 case class AppController(db: Database) extends AlexandriaStack {
 

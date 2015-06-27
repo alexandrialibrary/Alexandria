@@ -6,6 +6,8 @@ import java.sql.Date
 import slick.driver.H2Driver.api._
 
 /**
+ * Definitions for Alexandria database tables
+ *
  * Created by hawk on 5/20/15.
  */
 object Tables {
@@ -17,12 +19,12 @@ object Tables {
   val wrote   = TableQuery[Wrote]
   val deweys  = TableQuery[DeweyDecimals]
 
-  // DBIO Action which creates the schema
+  /** DBIO Action which creates the schema */
   val createSchemaAction = (
     books.schema ++ loans.schema ++ users.schema ++ authors.schema ++ wrote.schema
   ).create
 
-  // DBIO Action which DESTROYS FUCKING EVERYTHING
+  /** DBIO Action which DESTROYS FUCKING EVERYTHING */
   val dropTablesAction = DBIO.seq(
     wrote.schema.drop,
     deweys.schema.drop,
@@ -33,6 +35,11 @@ object Tables {
 
   //TODO: AUTH table for password hashes
 
+  /**
+   * Look up the book matching a given ISBN
+   * @param isbn the ISBN to look up
+   * @return a DBIOAction containing a Future on the book matching that ISBN
+   */
   def booksByISBNQuery(isbn: ISBN) = for {
     book <- books if book.isbn === isbn.toString
   } yield book

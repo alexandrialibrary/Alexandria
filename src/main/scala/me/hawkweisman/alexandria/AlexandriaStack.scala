@@ -36,7 +36,7 @@ trait AlexandriaStack extends ScalatraServlet
   }
 
 
-  notFound {
+  notFound { //TODO: custom 404 page
     // remove content type in case it was set through an action
     contentType = null
     // Try to render a ScalateTemplate if no route matched
