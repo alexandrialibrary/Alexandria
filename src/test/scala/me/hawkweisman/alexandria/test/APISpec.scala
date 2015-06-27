@@ -1,6 +1,8 @@
 package me.hawkweisman.alexandria
 package test
 
+import java.net.URL
+
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import controllers.APIController
 import controllers.swagger.AlexandriaSwagger
@@ -17,6 +19,7 @@ import slick.driver.H2Driver.api._
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.util.Try
 
 class APISpec extends ScalatraWordSpec
   with Matchers
@@ -43,7 +46,9 @@ class APISpec extends ScalatraWordSpec
   "The GET /book/{isbn} route" when {
     "the requested book is not in the database" should {
       "add the book to the database and return it" taggedAs(DbTest, InternetTest) in {
-        // TODO: assume that the internet is available here
+        assume( Try( new URL("https://openlibrary.org").openConnection() ).isSuccess,
+          "OpenLibrary API was not reachable"
+        )
         get("/book/ISBN:9780980200447") {
           //info(body) //uncomment this if you need to look at the books that are happening
           assume(status != 504, "Test gateway timed out")
