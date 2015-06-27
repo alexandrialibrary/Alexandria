@@ -2,6 +2,7 @@ package me.hawkweisman.alexandria
 package controllers
 
 import me.hawkweisman.util.RichException.makeRich
+import me.hawkweisman.util.concurrent.tryToFuture
 
 import responses.{ModelResponseMessage,ErrorModel,BookSerializer,AuthorSerializer}
 import model.Tables._
@@ -10,15 +11,14 @@ import model.{ISBN, Book, Author}
 import org.scalatra._
 import org.scalatra.json._
 import org.scalatra.FutureSupport
-import org.scalatra.swagger.{Swagger,SwaggerSupport,ResponseMessage,StringResponseMessage}
+import org.scalatra.swagger.{Swagger,SwaggerSupport,StringResponseMessage}
 
-import org.json4s.{DefaultFormats, Formats}
+import org.json4s._
+import org.json4s.native.JsonMethods._
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Try,Success,Failure}
+import scala.util.{Try, Success, Failure}
 
 import slick.driver.H2Driver.api._
 
@@ -158,7 +158,20 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   }
 
   post("/books/?", operation(createBook)) {
-    NotImplemented("This isn't done yet.")
+    val newBook: Future[Book] = Try(parse(params("book")).extract[Book])
+    val query: Future[Book]   = newBook flatMap {  book =>
+        db run ( books +=  book ) map { _ => book }
+    }
+    new AsyncResult {
+      val is = query map { book => // TODO: what if the book was already in the DB?
+        logger debug s"Added book $book to database"
+        Created(book)
+      } recover {
+        case _: NoSuchElementException => BadRequest(ErrorModel(400, "No book data was sent"))
+        case why: MappingException     => BadRequest(ErrorModel fromException (400, why))
+        case why: Throwable            => InternalServerError(ErrorModel fromException (500, why))
+      }
+    }
   }
 
 

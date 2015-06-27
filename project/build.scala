@@ -23,7 +23,7 @@ object AlexandriaBuild extends Build {
       scalaVersion := projScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
-      resolvers += "Hawk Weisman Bintray Repo" at "https://dl.bintray.com/hawkw/maven",
+      resolvers += "Hawk's Bintray Repo" at "https://dl.bintray.com/hawkw/maven",
       libraryDependencies ++= Seq(
         "org.scalatra"                  %%  "scalatra"              % scalatraVersion,
         "org.scalatra"                  %%  "scalatra-scalate"      % scalatraVersion,
@@ -51,7 +51,9 @@ object AlexandriaBuild extends Build {
             base / "webapp" / "WEB-INF" / "templates",
             Seq.empty,  /* default imports should be added here */
             Seq(
-              Binding("context", "_root_.org.scalatra.scalate.ScalatraRenderContext", importMembers = true, isImplicit = true)
+              Binding("context", "_root_.org.scalatra.scalate.ScalatraRenderContext",
+                importMembers = true,
+                isImplicit = true)
             ),  /* add extra bindings here */
             Some("templates")
           )
