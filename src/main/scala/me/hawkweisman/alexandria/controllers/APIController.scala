@@ -50,8 +50,13 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
 
   // ---- Book API actions ---------------------------------------------------
   val getByISBN = (apiOperation[Book]("getBookByISBN")
-  summary     "Get a specific book by ISBN"
-  notes "Get a specific book by ISBN. If the user has book creation priviliges and the ISBN is unrecognized, the book definition is pulled from the Open Library API and stored in the database before returning a book object as normal (but with a different status). If the user doesn't have book creation privilieges and the ISBN is unrecognized, a 404 is returned."
+  summary "Get a specific book by ISBN"
+  notes """Get a specific book by ISBN. If the user has book creation privileges
+          |and the ISBN is unrecognized, the book definition is pulled from the
+          |Open Library API and stored in the database before returning a book
+          |object as normal (but with a different status). If the user doesn't
+          |have book creation privileges and the ISBN is unrecognized, a 404
+          |is returned.""".stripMargin.replaceAll("\n", " ")
   responseMessage ModelResponseMessage(200, "Book returned", "Book")
   responseMessage ModelResponseMessage(201, "Book created", "Book")
   responseMessage StringResponseMessage(404, "Book not found")
