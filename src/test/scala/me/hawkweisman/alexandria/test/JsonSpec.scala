@@ -1,9 +1,12 @@
-import org.scalatest.{Matchers,WordSpec,OptionValues,TryValues}
+package me.hawkweisman.alexandria
+package test
 
-import me.hawkweisman.alexandria.model.{Author, Book, ISBN}
+import model.{Author, Book, ISBN}
 
 import org.json4s._
 import org.json4s.native.JsonMethods._
+
+import org.scalatest.{Matchers, OptionValues, TryValues, WordSpec}
 
 class JsonSpec extends WordSpec
   with Matchers

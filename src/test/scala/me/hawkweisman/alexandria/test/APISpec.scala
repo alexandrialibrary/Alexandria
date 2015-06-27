@@ -1,15 +1,16 @@
+package me.hawkweisman.alexandria
+package test
+
 import com.mchange.v2.c3p0.ComboPooledDataSource
-
-import me.hawkweisman.alexandria.controllers.APIController
-import me.hawkweisman.alexandria.controllers.swagger.AlexandriaSwagger
-import me.hawkweisman.alexandria.model.{Book, Author}
-import me.hawkweisman.alexandria.model.Tables._
-
-import org.scalatest.{Inside, Matchers, OptionValues}
-import org.scalatra.test.scalatest._
+import controllers.APIController
+import controllers.swagger.AlexandriaSwagger
+import model.Tables._
+import model.{Author, Book}
 
 import org.json4s._
 import org.json4s.native.JsonMethods._
+import org.scalatest.{Inside, Matchers, OptionValues}
+import org.scalatra.test.scalatest._
 
 import slick.driver.H2Driver.api._
 

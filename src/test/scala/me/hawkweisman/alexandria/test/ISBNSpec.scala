@@ -1,6 +1,8 @@
-import org.scalatest.{Matchers,WordSpec,TryValues}
+package me.hawkweisman.alexandria
+package test
 
-import me.hawkweisman.alexandria.model.ISBN
+import model.ISBN
+import org.scalatest.{Matchers, TryValues, WordSpec}
 
 class ISBNSpec extends WordSpec
   with Matchers

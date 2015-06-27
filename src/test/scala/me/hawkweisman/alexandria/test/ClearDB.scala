@@ -1,7 +1,8 @@
+package me.hawkweisman.alexandria.test
+
 import me.hawkweisman.alexandria.model.Tables._
 
 import org.scalatest._
-
 import slick.driver.H2Driver.api._
 
 import scala.concurrent.Await
