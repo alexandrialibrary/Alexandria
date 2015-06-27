@@ -49,12 +49,12 @@ class ScalatraBootstrap extends LifeCycle
 
   private def closeDbConnection() {
     logger.info("Closing c3po connection pool")
-    cpds.close
+    cpds.close()
   }
 
   override def destroy(context: ServletContext) {
     super.destroy(context)
-    closeDbConnection
+    closeDbConnection()
   }
 
 }

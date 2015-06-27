@@ -40,7 +40,7 @@ case class ISBN(group: String,pub: String,title: String, prefix: Option[String])
     (resp) => parse(resp)
   }
 
-  lazy val authors: Future[List[Author]] = lookup map { Author fromJson _ }
+  lazy val authors: Future[List[Author]] = lookup map { Author fromJson }
   lazy val book: Future[Book] = lookup flatMap { Book.fromJson(_, this) }
   /**
    * Calculate the check value for an ISBN-13 number
@@ -100,22 +100,20 @@ object ISBN {
    * @return Either a [[Success]] containing an ISBN or a [[Failure]] if the string could not be parsed.
    */
   def parse(str: String): Try[ISBN] = str match {
-    case isbn10(group,pub,title,check) =>{
+    case isbn10(group,pub,title,check) =>
       val isbn = ISBN(group, pub, title, None)
       isbn.isbn10CheckValue match {
         case n if n == (if (check == "X") 10 else check.toInt) => Success(isbn)
         case n => Failure(new NumberFormatException(
           s"Invalid ISBN-10 check value: expected $check, got $n"))
       }
-    }
-    case isbn13(prefix,group,pub,title,check) => {
+    case isbn13(prefix,group,pub,title,check) =>
       val isbn = ISBN(group, pub, title, Some(prefix))
       isbn.isbn13CheckValue match {
         case n if n == check.toInt => Success(isbn)
         case n => Failure(new NumberFormatException(
           s"Invalid ISBN-13 check value: expected ${check.toInt}, got $n"))
       }
-    }
     case _ => Failure(new NumberFormatException(s"$str was not a valid ISBN number"))
   }
 

@@ -14,7 +14,6 @@ import org.scalatra.FutureSupport
 import org.scalatra.swagger.{ Swagger, SwaggerSupport, StringResponseMessage }
 
 import org.json4s._
-import org.json4s.native.JsonMethods._
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.ExecutionContext.Implicits.global
