@@ -47,7 +47,7 @@
 						<th>ISBN</th>
 						<th>Title</th>
 						<th>Author</th>
-						<th>Pages (not the one by Apple)</th>
+						<th>Pages</th>
 					</tr>
 				</thead>
 				<tbody>
