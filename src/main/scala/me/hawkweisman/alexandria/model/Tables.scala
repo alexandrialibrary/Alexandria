@@ -44,7 +44,11 @@ object Tables {
     book <- books if book.isbn === isbn.toString
   } yield book
 
-  //val booksByISBN = Compiled(booksByISBNQuery _)
+  def booksByISBNString(isbn: Rep[String]) = for {
+    book <- books if book.isbn === isbn
+  } yield book
+
+  val booksByISBNCompiled = Compiled(booksByISBNString _)
 
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 

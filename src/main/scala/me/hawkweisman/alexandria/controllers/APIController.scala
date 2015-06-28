@@ -105,7 +105,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
     ISBN parse params("isbn") match {
       case Success(isbn) =>
         logger debug s"Successfully parsed ISBN $isbn"
-        val bookQuery: Future[Option[Book]] = db run booksByISBNQuery(isbn)
+        val bookQuery: Future[Option[Book]] = db run booksByISBNCompiled(isbn)
           .result
           .headOption
         new AsyncResult {

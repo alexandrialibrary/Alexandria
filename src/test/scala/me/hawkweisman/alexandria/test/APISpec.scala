@@ -482,7 +482,7 @@ class APISpec extends ScalatraWordSpec
           assume(status != 504, "Test gateway timed out")
           status should equal (200)
 
-          info(body)
+          //info(body)
           val JArray(authorList) = parse(body)
           val authors = authorList map { value: JValue =>
             (value \\ "name").extract[String]

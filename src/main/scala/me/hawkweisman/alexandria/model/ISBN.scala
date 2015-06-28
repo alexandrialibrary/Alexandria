@@ -1,7 +1,7 @@
 package me.hawkweisman.alexandria
 package model
 
-import scala.language.postfixOps
+import scala.language.{implicitConversions, postfixOps}
 import scala.util.{ Try, Success, Failure }
 
 import dispatch._, Defaults._
@@ -166,5 +166,7 @@ object ISBN {
       }
     case _ => Failure(new NumberFormatException(s"$str was not a valid ISBN number"))
   }
+
+  implicit def isbnAsString(isbn: ISBN): String = isbn.format
 
 }
