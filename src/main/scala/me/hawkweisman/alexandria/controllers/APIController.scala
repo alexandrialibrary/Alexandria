@@ -31,7 +31,8 @@ import slick.driver.H2Driver.api._
  * @author Hawk Weisman
  * @since v0.1.0
  */
-case class APIController(db: Database)(implicit val swagger: Swagger) extends AlexandriaStack
+case class APIController(db: Database)(implicit val swagger: Swagger)
+  extends AlexandriaStack
   with NativeJsonSupport
   with SwaggerSupport
   with FutureSupport {
@@ -174,9 +175,12 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
         logger debug s"Added book $book to database"
         Created(book)
       } recover {
-        case _: NoSuchElementException => BadRequest(ErrorModel(400, "No book data was sent"))
-        case why: MappingException => BadRequest(ErrorModel fromException (400, why))
-        case why: Throwable => InternalServerError(ErrorModel fromException (500, why))
+        case _: NoSuchElementException =>
+          BadRequest(ErrorModel(400, "No book data was sent"))
+        case why: MappingException =>
+          BadRequest(ErrorModel fromException (400, why))
+        case why: Throwable =>
+          InternalServerError(ErrorModel fromException (500, why))
       }
     }
   }
@@ -243,7 +247,21 @@ case class APIController(db: Database)(implicit val swagger: Swagger) extends Al
   }
 
   get("/author/:name", operation(getAuthorByName)) {
-    NotImplemented("This isn't done yet.")
+    val name: Option[Array[String]]  = params.get("name") map { _ split " " }
+    val first = name map { _.head } getOrElse halt(400, "Invalid first name")
+    val last  = name map { _.last } getOrElse halt(400, "Invalid last name")
+    val query = db run(authorByNameCompiled(first,last)
+      .result
+      .headOption)
+    new AsyncResult { val is = query map {
+        case Some(author) => Ok(author)
+        case None         => NotFound(
+          ErrorModel(404, "No authors found matching requested name"))
+      } recover {
+        case why: Throwable =>
+          InternalServerError(ErrorModel fromException (500, why))
+      }
+    }
   }
 
 }

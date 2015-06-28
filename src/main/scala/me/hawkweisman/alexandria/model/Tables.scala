@@ -40,15 +40,18 @@ object Tables {
    * @param isbn the ISBN to look up
    * @return a DBIOAction containing a Future on the book matching that ISBN
    */
-  def booksByISBNQuery(isbn: ISBN) = for {
-    book <- books if book.isbn === isbn.toString
-  } yield book
-
   def booksByISBNString(isbn: Rep[String]) = for {
     book <- books if book.isbn === isbn
   } yield book
 
   val booksByISBNCompiled = Compiled(booksByISBNString _)
+
+  def authorByName(first: Rep[String], last: Rep[String]) = for {
+    author <- authors
+      if author.firstName === first && author.lastName == last
+  } yield author
+
+  def authorByNameCompiled = Compiled(authorByName _)
 
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
