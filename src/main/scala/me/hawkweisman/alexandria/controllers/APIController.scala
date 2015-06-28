@@ -247,9 +247,9 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
   }
 
   get("/author/:name", operation(getAuthorByName)) {
-    val name: Option[Array[String]]  = params.get("name") map { _ split " " }
-    val first = name map { _.head } getOrElse halt(400, "Invalid first name")
-    val last  = name map { _.last } getOrElse halt(400, "Invalid last name")
+    val name: Option[Array[String]]  = params.get("name") map { _ split "-" }
+    val first = name map { _.head } getOrElse halt(400, "No first name")
+    val last  = name map { _.last } getOrElse halt(400, "No last name")
     val query = db run(authorByNameCompiled(first,last)
       .result
       .headOption)

@@ -48,7 +48,7 @@ object Tables {
 
   def authorByName(first: Rep[String], last: Rep[String]) = for {
     author <- authors
-      if author.firstName === first && author.lastName == last
+      if author.firstName === first && author.lastName === last
   } yield author
 
   def authorByNameCompiled = Compiled(authorByName _)
