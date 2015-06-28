@@ -536,6 +536,33 @@ class APISpec extends ScalatraWordSpec
       }
     }
   }
-  "The POST /authors/ route"
+  "The GET /author/{name} route" when {
+    "the requested author is not in the database" should {
+      "return 404" taggedAs DbTest in {
+        get("/author/Hawk-Weisman") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (404)
+        }
+      }
+    }
+    "the requested author is in the database" should {
+      "return the requested author for John Miedema" taggedAs DbTest in {
+        createAuthors()
+        get("/author/John-Miedema") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (200)
+          (parse(body) \\ "name").extract[String] shouldEqual "John Miedema"
+        }
+      }
+      "return the requested author for Knuth" taggedAs DbTest in {
+        createAuthors()
+        get("/author/Donald-Knuth") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (200)
+          (parse(body) \\ "name").extract[String] shouldEqual "Donald E. Knuth"
+        }
+      }
+    }
+  }
 
 }
