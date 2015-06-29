@@ -216,7 +216,8 @@ paths:
         200:
           description: Books returned
           schema:
-            title: Book
+            title: Books
+            type: array
             items:
               $ref: '#/definitions/Book'
         401:
