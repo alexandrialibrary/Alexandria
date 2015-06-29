@@ -53,7 +53,7 @@
 				<tbody>
 					<tr ng-repeat="book in booksList.books">
 						<td><small>{{book.isbn}}</small></td>
-						<td><em class="text-capitalize">{{book.title}}</em></td>
+						<td><em>{{book.title}}</em></td>
 						<td>{{book.byline}}</td>
 						<td>{{book.pages}}</td>
 					</tr>

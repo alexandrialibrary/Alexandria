@@ -2,8 +2,8 @@ package me.hawkweisman.alexandria
 package model
 
 import org.json4s._
-import org.json4s.native.JsonMethods._
 
+import scala.language.postfixOps
 import scala.util.Try
 
 trait Ownable {
@@ -45,9 +45,9 @@ case class Book(
    * This is to be used for sorting purposes.
    * @return the book's title, with the word "The" stripped
    */
-  protected[model] def mungedTitle = if (title startsWith "The") {
+  protected[model] def mungedTitle = (if (title startsWith "The") {
     title.stripPrefix("The") + ", The" }
-    else title
+    else title) toLowerCase
 }
 
 
