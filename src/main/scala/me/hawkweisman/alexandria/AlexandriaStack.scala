@@ -20,7 +20,7 @@ trait AlexandriaStack extends ScalatraServlet
 
   val db: Database
 
-  /* wire up the precompiled templates */
+  /* wire up the pre-compiled templates */
   override protected def defaultTemplatePath: List[String] = List("/WEB-INF/templates/views")
   override protected def createTemplateEngine(config: ConfigT) = {
     val engine = super.createTemplateEngine(config)
@@ -29,7 +29,7 @@ trait AlexandriaStack extends ScalatraServlet
     engine.packagePrefix = "templates"
     engine
   }
-  /* end wiring up the precompiled templates */
+  /* end wiring up the pre-compiled templates */
 
   override protected def templateAttributes(implicit request: HttpServletRequest): mutable.Map[String, Any] = {
     super.templateAttributes ++ mutable.Map.empty // Add extra attributes here, they need bindings in the build file

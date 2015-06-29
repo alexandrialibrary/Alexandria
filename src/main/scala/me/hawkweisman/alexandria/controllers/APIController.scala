@@ -250,9 +250,9 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
     val name: Option[Array[String]]  = params.get("name") map { _ split "-" }
     val first = name map { _.head } getOrElse halt(400, "No first name")
     val last  = name map { _.last } getOrElse halt(400, "No last name")
-    val query = db run(authorByNameCompiled(first,last)
+    val query = db run authorByNameCompiled(first,last)
       .result
-      .headOption)
+      .headOption
     new AsyncResult { val is = query map {
         case Some(author) => Ok(author)
         case None         => NotFound(
