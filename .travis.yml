@@ -3,8 +3,6 @@ language: scala
 scala:
   - 2.11.7
   - 2.11.6
-  - 2.11.4
-  - 2.10.4
 cache:
   directories:
     # These directories are cached to S3 at the end of the build
