@@ -33,6 +33,11 @@ paths:
           type: integer
           format: int32
           default: 10
+        - name: sort-by
+          description: How to sort the returned list. Options are "title" for alphabetical order by title and "date" for publication date.
+          in: query
+          required: false
+          type: string
       responses:
         200:
           description: List all books
