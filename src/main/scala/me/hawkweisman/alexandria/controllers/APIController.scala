@@ -89,6 +89,9 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
       .description("The number of books to retrieve")
       .optional
       .defaultValue(10)
+      queryParam[String]("sort-by")
+      .description("""How to sort the returned list. Options are "title" for alphabetical order by title and "date" for publication date.""")
+      .optional
       )
     )
 
@@ -102,6 +105,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
 
   // book API routes -------------------------------------------------------
   get("/book/:isbn", operation(getByISBN)) {
+    response.setHeader("X-Clacks-Overhead", "GNU Terry Pratchett")
     logger debug s"Handling book request for ${params("isbn")}"
     ISBN parse params("isbn") match {
       case Success(isbn) =>
@@ -199,6 +203,9 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
       .description("The number of authors to retrieve")
       .optional
       .defaultValue(10)
+      queryParam[String]("sort-by")
+      .description("""How to sort the returned list. Options are "first" for first name and "last" for last name.""")
+      .optional
       )
     )
 
