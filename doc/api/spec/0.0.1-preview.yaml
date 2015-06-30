@@ -216,7 +216,8 @@ paths:
         200:
           description: Books returned
           schema:
-            title: Book
+            title: Books
+            type: array
             items:
               $ref: '#/definitions/Book'
         401:
@@ -234,7 +235,8 @@ paths:
           description: The ISBN of the book to checkout.
           in: body
           required: true
-          type: string
+          schema:
+            type: string
       responses:
         200:
           description: Book checked out (loan returned)
