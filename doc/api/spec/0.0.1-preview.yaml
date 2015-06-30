@@ -139,6 +139,11 @@ paths:
           type: integer
           format: int32
           default: 10
+        - name: sort-by
+          description: How to sort the returned list. Options are "first" for first name and "last" for last name.
+          in: query
+          required: false
+          type: string
       responses:
         200:
           description: List all authors
@@ -308,3 +313,4 @@ definitions:
         format: int32
       message:
         type: string
+        
