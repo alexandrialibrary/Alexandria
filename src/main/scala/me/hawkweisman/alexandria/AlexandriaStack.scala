@@ -20,6 +20,10 @@ trait AlexandriaStack extends ScalatraServlet
 
   val db: Database
 
+  before() {
+    response.addHeader("X-Clacks-Overhead","GNU Terry Pratchett")
+  }
+
   /* wire up the pre-compiled templates */
   override protected def defaultTemplatePath: List[String] = List("/WEB-INF/templates/views")
   override protected def createTemplateEngine(config: ConfigT) = {
