@@ -246,8 +246,8 @@ extends AlexandriaStack
       p: String => Try(p.toInt) toOption
     } getOrElse 10
     val sortedAuthors = params get "sort-by" match {
-      case Some("first") => authors.sortBy(_.firstName.desc)
-      case Some("last")  => authors.sortBy(_.lastName.desc)
+      case Some("first") => authors.sortBy(_.firstName.asc)
+      case Some("last")  => authors.sortBy(_.lastName.asc)
       case None          => authors
       case _             => halt(400, ErrorModel(400, "Invalid sort-by param"))
     }
