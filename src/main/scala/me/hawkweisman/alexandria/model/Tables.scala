@@ -51,6 +51,30 @@ object Tables {
       if author.firstName === first && author.lastName === last
   } yield author
 
+  val sortedAuthorsFirst = Compiled( (offset: ConstColumn[Long]) =>
+    authors.sortBy(_.firstName.asc)
+           .drop(offset)
+          )
+
+  val sortedAuthorsFirstCount = Compiled(
+    (offset: ConstColumn[Long], count: ConstColumn[Long]) =>
+      authors.sortBy(_.firstName.asc)
+             .drop(offset)
+             .take(count)
+           )
+
+  val sortedAuthorsLast = Compiled( (offset: ConstColumn[Long]) =>
+    authors.sortBy(_.lastName.asc)
+           .drop(offset)
+         )
+
+  val sortedAuthorsLastCount = Compiled(
+    (offset: ConstColumn[Long], count: ConstColumn[Long]) =>
+      authors.sortBy(_.lastName.asc)
+             .drop(offset)
+             .take(count)
+           )
+
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
     def isbn      = column[String]("ISBN", O.PrimaryKey)

@@ -245,24 +245,20 @@ extends AlexandriaStack
     val count: Int = params get "count" flatMap {
       p: String => Try(p.toInt) toOption
     } getOrElse 10
-    val sortedAuthors = params get "sort-by" match {
-      case Some("first") => authors.sortBy(_.firstName.asc)
-      case Some("last")  => authors.sortBy(_.lastName.asc)
-      case None          => authors
+    val query = params get "sort-by" match {
+      case Some("first")
+        if count > 0     => sortedAuthorsFirstCount(count, offset).result
+      case Some("first") => sortedAuthorsFirst(offset).result
+      case Some("last")
+        if count > 0     => sortedAuthorsLastCount(count, offset).result
+      case Some("last")    => sortedAuthorsLast(offset).result
+      case None
+        if count > 0     => authors.drop(offset).take(count).result
+      case None          => authors.drop(offset).result
       case Some(thing)   => halt(400, ErrorModel(400, s"Invalid sort-by param '$thing'."))
     }
-    val query = db run (if (count > 0) {
-      sortedAuthors
-        .drop(offset)
-        .take(count)
-        .result
-    } else {
-      sortedAuthors
-        .drop(offset)
-        .result
-    })
     new AsyncResult {
-      val is = query map { authors =>
+      val is = db run query map { authors =>
         logger debug "Successfully got list of authors"
         Ok(authors)
       } recover {
