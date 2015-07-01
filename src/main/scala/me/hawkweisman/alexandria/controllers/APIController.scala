@@ -32,7 +32,7 @@ import slick.driver.H2Driver.api._
  * @since v0.1.0
  */
 case class APIController(db: Database)(implicit val swagger: Swagger)
-  extends AlexandriaStack
+extends AlexandriaStack
   with NativeJsonSupport
   with SwaggerSupport
   with FutureSupport {
@@ -247,7 +247,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
     } getOrElse 10
     val sortedAuthors = params get "sort-by" match {
       case Some("first") => authors.sortBy(_.firstName.desc)
-      case Some("last")  => authors.sortBy(_.firstName.desc)
+      case Some("last")  => authors.sortBy(_.lastName.desc)
       case None          => authors
       case _             => halt(400, ErrorModel(400, "Invalid sort-by param"))
     }
