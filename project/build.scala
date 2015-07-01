@@ -10,7 +10,7 @@ object AlexandriaBuild extends Build {
   val projOrganization = "me.hawkweisman"
   val projName = "alexandria"
   val projVersion = "0.0.1"
-  val projScalaVersion = "2.11.6"
+  val projScalaVersion = "2.11.7"
   val scalatraVersion = "2.4.0.RC1"
   val slickVersion = "3.0.0"
 
