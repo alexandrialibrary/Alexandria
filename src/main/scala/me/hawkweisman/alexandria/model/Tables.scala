@@ -75,6 +75,8 @@ object Tables {
              .take(count)
            )
 
+  // val sortedBooksTitle = Compiled
+
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
     def isbn      = column[String]("ISBN", O.PrimaryKey)

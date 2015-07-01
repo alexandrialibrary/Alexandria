@@ -48,6 +48,7 @@ extends AlexandriaStack
   // Before every action runs, set the content type to be in JSON format.
   before() {
     contentType = formats("json")
+    response.setHeader("X-Clacks-Overhead", "GNU Terry Pratchett")
   }
 
   // ---- Book API actions ---------------------------------------------------
@@ -105,7 +106,6 @@ extends AlexandriaStack
 
   // book API routes -------------------------------------------------------
   get("/book/:isbn", operation(getByISBN)) {
-    response.setHeader("X-Clacks-Overhead", "GNU Terry Pratchett")
     logger debug s"Handling book request for ${params("isbn")}"
     ISBN parse params("isbn") match {
       case Success(isbn) =>
