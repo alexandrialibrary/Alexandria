@@ -9,8 +9,8 @@ cache:
     - $HOME/.ivy2/cache
     - $HOME/.sbt/boot/
 script:
-  - sbt compile
-  - sbt clean coverage test
+  - ./sbt ++$TRAVIS_SCALA_VERSION compile
+  - ./sbt ++$TRAVIS_SCALA_VERSION clean coverage test
     # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
@@ -25,6 +25,6 @@ notifications:
     secure: OPuCsKLxD5tqFqIyDTA6KQniJg1sfK+pIwMmY0G6Qc6jBXfXqiRNu+jdWsQVGQrK5z6aypPnjXE0hvDJLLwFkYXh+K2IOBMOGLohpBRcZSI/FX094UbGJw+ixIx778q1KC95/ja2ghs7iQqoYoUkvuKS2BgHIvrcpEyLtRIGhKc1ILpnA1RwtSBqIHpxavoUjr3UkbeIHLSlxYX2I+3GmZGSmnlkPINoXrDvoMECYj4dwyS4ngjg1WaUNDpFlca3N/45xrn8j+suBcP3AjQDf/tvF2jxQNPbv+fCybeaQIhjK3RIy3ZfdJliz5h4B+/0TCnRvYf1ZlVukzQTpjdJuFhV40Cb7m7R7NTWt3bYZ5RbrQvyX4eynF3Ft1X+hfIugL6UcXagEwwDxtSxhlOMoiR/h7g3WjsbrLceAQ79bn8WVpWyEMI2BB4+bjU6OPRPIbfquKlr3zzoT6jgIO1oQ+xFzsp5FvmfdjQPi+KjgyAZVAkkHjM96wBY0w47JA9J2uLvvHoX/tJj0zGTOU5nxi1TasnG//7BZ3M4vWlUR25nLfMz7hI4fszv/a6J6MfgPHNOxxuXPPOt92+Pmz2+IO8XbxcAtkrbYo01Sh38NzYtNj85qUPihV9zJOtx7igomwxR1jJWNjp2Oy/+/2Eg8+FpcJsfXgXUFbZq5cfg8Nk=
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - sbt coverageReport
-  - sbt coverageAggregate
-  - sbt codacyCoverage
+  - ./sbt ++$TRAVIS_SCALA_VERSION coverageReport
+  - ./sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
+  - ./sbt ++$TRAVIS_SCALA_VERSION codacyCoverage
