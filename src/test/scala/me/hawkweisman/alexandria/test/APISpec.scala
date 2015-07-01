@@ -4,9 +4,13 @@ package test
 import java.net.URL
 
 import com.mchange.v2.c3p0.ComboPooledDataSource
+
 import controllers.APIController
+import controllers.responses.ErrorModel
 import controllers.swagger.AlexandriaSwagger
+
 import tags.{InternetTest, DbTest}
+
 import model.Tables._
 import model.{Author, Book}
 
@@ -573,6 +577,14 @@ extends ScalatraWordSpec
             "John Miedema",
             "Oren Patashnik"
           )
+        }
+      }
+      "return an error for invalid sort-by parameters" in {
+        get("/authors/?offset=0&count=-1&sort-by=asdf") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (400)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "Invalid sort-by param 'asdf'."
         }
       }
     }
