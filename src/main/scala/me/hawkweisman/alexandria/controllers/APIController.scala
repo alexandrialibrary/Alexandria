@@ -157,7 +157,8 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
     val sortedBooks = params get "sort-by" match {
       case Some("title")  => books.sortBy(_.title.desc)
       case Some("date")   => ??? // todo: this requires dates to be parsed as times
-      case _              => books
+      case None           => books
+      case _              => halt(400, ErrorModel(400, "Invalid sort-by param"))
     }
     val query = db run (if (count > 0) {
       sortedBooks
@@ -247,7 +248,8 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
     val sortedAuthors = params get "sort-by" match {
       case Some("first") => authors.sortBy(_.firstName.desc)
       case Some("last")  => authors.sortBy(_.firstName.desc)
-      case _             => authors
+      case None          => authors
+      case _             => halt(400, ErrorModel(400, "Invalid sort-by param"))
     }
     val query = db run (if (count > 0) {
       sortedAuthors
