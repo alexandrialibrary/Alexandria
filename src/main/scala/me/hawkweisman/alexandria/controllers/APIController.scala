@@ -238,16 +238,26 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
     )
 
   get("/authors/?", operation(listAuthors)) {
-    val offset: Int = params.get("offset") flatMap {
+    val offset: Int = params get "offset" flatMap {
       p: String => Try(p.toInt) toOption
     } getOrElse 0
-    val count: Int = params.get("count") flatMap {
+    val count: Int = params get "count" flatMap {
       p: String => Try(p.toInt) toOption
     } getOrElse 10
+    val sortedAuthors = params get "sort-by" match {
+      case Some("first") => authors.sortBy(_.firstName.desc)
+      case Some("last")  => authors.sortBy(_.firstName.desc)
+      case _             => authors
+    }
     val query = db run (if (count > 0) {
-      authors.drop(offset).take(count).result
+      sortedAuthors
+        .drop(offset)
+        .take(count)
+        .result
     } else {
-      authors.drop(offset).result
+      sortedAuthors
+        .drop(offset)
+        .result
     })
     new AsyncResult {
       val is = query map { authors =>
