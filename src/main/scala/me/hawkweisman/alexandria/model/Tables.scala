@@ -75,8 +75,16 @@ object Tables {
              .take(count)
            )
 
-  // val sortedBooksTitle = Compiled
-
+  val sortedBooksTitle = Compiled( (offset: ConstColumn[Long]) =>
+      books.sortBy(_.title.asc)
+           .drop(offset)
+         )
+  val sortedBooksTitleCount = Compiled(
+    (offset: ConstColumn[Long], count: ConstColumn[Long]) =>
+     books.sortBy(_.title.asc)
+          .drop(offset)
+          .take(count)
+        )
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
     def isbn      = column[String]("ISBN", O.PrimaryKey)

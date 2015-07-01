@@ -154,24 +154,18 @@ extends AlexandriaStack
       p: String => Try(p.toInt) toOption
     } getOrElse 10
     // build query
-    val sortedBooks = params get "sort-by" match {
-      case Some("title")  => books.sortBy(_.title.desc)
-      case Some("date")   => ??? // todo: this requires dates to be parsed as times
+    val query = params get "sort-by" match {
+      case Some("title")
+        if count > 0      => sortedBooksTitleCount(count, offset).result
+      case Some("title")  => sortedBooksTitle(offset).result
+      case Some("date")   => ??? // TODO: this requires dates to be parsed as times
       case Some(thing)    => halt(400, ErrorModel(400, s"Invalid sort-by param '$thing'."))
-      case None           => books
+      case None           // TODO: add compiled queries for offset/count
+        if count > 0      => books.drop(offset).take(count).result
+      case None           => books.drop(offset).result
     }
-    val query = db run (if (count > 0) {
-      sortedBooks
-        .drop(offset)
-        .take(count)
-        .result
-    } else {
-      sortedBooks
-        .drop(offset)
-        .result
-    })
     new AsyncResult {
-      val is = query map { books =>
+      val is = db run query map { books =>
         logger debug "Successfully got list of books"
         Ok(books)
       } recover {
@@ -251,7 +245,7 @@ extends AlexandriaStack
       case Some("first") => sortedAuthorsFirst(offset).result
       case Some("last")
         if count > 0     => sortedAuthorsLastCount(count, offset).result
-      case Some("last")    => sortedAuthorsLast(offset).result
+      case Some("last")  => sortedAuthorsLast(offset).result
       case None
         if count > 0     => authors.drop(offset).take(count).result
       case None          => authors.drop(offset).result
