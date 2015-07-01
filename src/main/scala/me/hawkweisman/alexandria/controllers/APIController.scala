@@ -157,8 +157,8 @@ extends AlexandriaStack
     val sortedBooks = params get "sort-by" match {
       case Some("title")  => books.sortBy(_.title.desc)
       case Some("date")   => ??? // todo: this requires dates to be parsed as times
+      case Some(thing)    => halt(400, ErrorModel(400, s"Invalid sort-by param '$thing'."))
       case None           => books
-      case _              => halt(400, ErrorModel(400, "Invalid sort-by param"))
     }
     val query = db run (if (count > 0) {
       sortedBooks
