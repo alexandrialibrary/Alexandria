@@ -249,7 +249,7 @@ extends AlexandriaStack
       case Some("first") => authors.sortBy(_.firstName.asc)
       case Some("last")  => authors.sortBy(_.lastName.asc)
       case None          => authors
-      case _             => halt(400, ErrorModel(400, "Invalid sort-by param"))
+      case Some(thing)   => halt(400, ErrorModel(400, s"Invalid sort-by param '$thing'."))
     }
     val query = db run (if (count > 0) {
       sortedAuthors
