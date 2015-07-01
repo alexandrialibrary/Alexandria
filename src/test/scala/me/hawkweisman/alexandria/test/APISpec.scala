@@ -536,11 +536,11 @@ extends ScalatraWordSpec
         }
       }
     }
-    "sorting authors" should {
+    "passed a sort-by parameter" should {
       "sort the authors by first name" taggedAs DbTest in {
         createAuthors()
 
-        get("/authors/?offset=0&count=-1?sort-by=first") {
+        get("/authors/?offset=0&count=-1&sort-by=first") {
           assume(status != 504, "Test gateway timed out")
           status should equal (200)
           // info(body)
@@ -559,7 +559,7 @@ extends ScalatraWordSpec
       "sort the authors by last name" taggedAs DbTest in {
         createAuthors()
 
-        get("/authors/?offset=0&count=-1?sort-by=last") {
+        get("/authors/?offset=0&count=-1&sort-by=last") {
           assume(status != 504, "Test gateway timed out")
           status should equal (200)
           // info(body)
