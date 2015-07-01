@@ -110,7 +110,7 @@ extends AlexandriaStack
     ISBN parse params("isbn") match {
       case Success(isbn) =>
         logger debug s"Successfully parsed ISBN $isbn"
-        val bookQuery: Future[Option[Book]] = db run booksByISBNCompiled(isbn)
+        val bookQuery: Future[Option[Book]] = db run booksByISBN(isbn)
           .result
           .headOption
         new AsyncResult {
@@ -280,7 +280,7 @@ extends AlexandriaStack
     val name: Option[Array[String]]  = params.get("name") map { _ split "-" }
     val first = name map { _.head } getOrElse halt(400, "No first name")
     val last  = name map { _.last } getOrElse halt(400, "No last name")
-    val query = db run authorByNameCompiled(first,last)
+    val query = db run authorByName(first,last)
       .result
       .headOption
     new AsyncResult { val is = query map {
