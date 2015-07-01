@@ -21,7 +21,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
 
-class APISpec extends ScalatraWordSpec
+class APISpec
+extends ScalatraWordSpec
   with Matchers
   with Inside
   with OptionValues
@@ -535,6 +536,46 @@ class APISpec extends ScalatraWordSpec
         }
       }
     }
+    "sorting authors" should {
+      "sort the authors by first name" taggedAs DbTest in {
+        createAuthors()
+
+        get("/authors/?offset=0&count=-1?sort-by=first") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (200)
+          // info(body)
+          val JArray(authorList) = parse(body)
+          val authors = authorList map { value: JValue =>
+            (value \\ "name").extract[String]
+          }
+          authors should contain inOrderOnly (
+            "Donald E. Knuth",
+            "John Miedema",
+            "Oren Patashnik",
+            "Ronald L. Graham"
+          )
+        }
+      }
+      "sort the authors by last name" taggedAs DbTest in {
+        createAuthors()
+
+        get("/authors/?offset=0&count=-1?sort-by=last") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (200)
+          // info(body)
+          val JArray(authorList) = parse(body)
+          val authors = authorList map { value: JValue =>
+            (value \\ "name").extract[String]
+          }
+          authors should contain inOrderOnly (
+            "Ronald L. Graham",
+            "Donald E. Knuth",
+            "John Miedema",
+            "Oren Patashnik"
+          )
+        }
+      }
+    }
   }
   "The GET /author/{name} route" when {
     "the requested author is not in the database" should {
@@ -564,5 +605,4 @@ class APISpec extends ScalatraWordSpec
       }
     }
   }
-
 }
