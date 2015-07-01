@@ -88,7 +88,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
       queryParam[Int]("count")
       .description("The number of books to retrieve")
       .optional
-      .defaultValue(10)
+      .defaultValue(10),
       queryParam[String]("sort-by")
       .description("""How to sort the returned list. Options are "title" for alphabetical order by title and "date" for publication date.""")
       .optional
@@ -153,10 +153,21 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
     val count: Int = params.get("count") flatMap {
       p: String => Try(p.toInt) toOption
     } getOrElse 10
+    // build query
+    val sortedBooks = params get "sort-by" match {
+      case Some("title")  => books.sortBy(_.title.desc)
+      case Some("date")   => ??? // todo: this requires dates to be parsed as times
+      case _              => books
+    }
     val query = db run (if (count > 0) {
-      books.drop(offset).take(count).result
+      sortedBooks
+        .drop(offset)
+        .take(count)
+        .result
     } else {
-      books.drop(offset).result
+      sortedBooks
+        .drop(offset)
+        .result
     })
     new AsyncResult {
       val is = query map { books =>
@@ -202,7 +213,7 @@ case class APIController(db: Database)(implicit val swagger: Swagger)
       queryParam[Int]("count")
       .description("The number of authors to retrieve")
       .optional
-      .defaultValue(10)
+      .defaultValue(10),
       queryParam[String]("sort-by")
       .description("""How to sort the returned list. Options are "first" for first name and "last" for last name.""")
       .optional
