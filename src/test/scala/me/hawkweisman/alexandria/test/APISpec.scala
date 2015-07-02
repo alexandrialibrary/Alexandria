@@ -349,6 +349,57 @@ extends ScalatraWordSpec
         }
       }
     }
+    "passed a sort-by parameter" should {
+      "sort the books by title" taggedAs DbTest in {
+        createBooks()
+        get("/books/?offset=0&count=-1&sort-by=title") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (200)
+          // info(body)
+          val books = parse(body).extract[Seq[Book]]
+          books should contain inOrderOnly (
+            Book(
+              isbn          = "ISBN:9780201896831",
+              title         = "The Art of Computer Programming, Vol. 1",
+              subtitle      = Some("Fundamental Algorithms"),
+              byline        = "Donald E. Knuth",
+              pages         = 672,
+              published_date = "1997",
+              publisher     = "Addison-Wesley",
+              weight        = Some("2.5 pounds")
+            ),
+            Book(
+              isbn          = "ISBN:0201558025",
+              title         = "Concrete mathematics",
+              subtitle      = Some("a foundation for computer science"),
+              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik",
+              pages         = 657,
+              published_date = "1994",
+              publisher     = "Addison-Wesley",
+              weight        = None
+            ),
+            Book(
+              isbn          = "ISBN:9780980200447",
+              title         = "Slow reading",
+              subtitle      = None,
+              byline        = "John Miedema",
+              pages         = 92,
+              published_date = "March 2009",
+              publisher     = "Litwin Books",
+              weight        = Some("1 grams")
+            )
+          )
+        }
+      }
+      "return an error for invalid sort-by parameters" in {
+        get("/books/?offset=0&count=-1&sort-by=asdf") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (400)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "Invalid sort-by param 'asdf'."
+        }
+      }
+    }
   }
   "The GET /authors/ route" when {
     "the requested number of authors is greater than the number of authors in the database" should {
