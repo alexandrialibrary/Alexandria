@@ -176,8 +176,10 @@ extends AlexandriaStack
   }
 
   post("/books/?", operation(createBook)) {
-    val newBook: Future[Book] = Try(parse(request.body).extract[Book])
-    val query: Future[Book] = newBook flatMap { book =>
+    val newBook: Future[Book] = if (request.body == "")
+      Failure(new NoSuchElementException("Empty body"))
+    else Try(parse(request.body).extract[Book])
+    val query: Future[Book]   = newBook flatMap { book =>
       db run (books += book) map { _ => book }
     }
     new AsyncResult {
