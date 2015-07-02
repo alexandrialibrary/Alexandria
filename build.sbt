@@ -13,4 +13,8 @@ gitHeadCommitSha in ThisBuild := Process("git rev-parse --short HEAD").lines.hea
 
 version in ThisBuild := s"$projVersion-${gitHeadCommitSha.value}"
 
-wartremoverExcluded += baseDirectory.value / "target"
+wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.Serializable, Wart.NonUnitStatements, Wart.Throw, Wart.DefaultArguments, Wart.Null, Wart.NoNeedForMonad)
+
+def genSources(base: File): PathFinder = (base / "target") ** "*.scala"
+
+wartremoverExcluded ++= genSources(baseDirectory.value).get
