@@ -13,4 +13,4 @@ gitHeadCommitSha in ThisBuild := Process("git rev-parse --short HEAD").lines.hea
 
 version in ThisBuild := s"$projVersion-${gitHeadCommitSha.value}"
 
-wartremoverWarnings in (Compile, compile) ++= Warts.all
+wartremoverExcluded += baseDirectory.value / "target"
