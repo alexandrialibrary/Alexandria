@@ -6,7 +6,7 @@ import java.net.URL
 import com.mchange.v2.c3p0.ComboPooledDataSource
 
 import controllers.APIController
-import controllers.responses.ErrorModel
+import controllers.responses.{ ErrorModel, AuthorSerializer }
 import controllers.swagger.AlexandriaSwagger
 
 import tags.{InternetTest, DbTest}
@@ -33,7 +33,7 @@ extends ScalatraWordSpec
   with OptionValues
   with ClearDB {
 
-  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats + AuthorSerializer
 
   implicit val swagger = new AlexandriaSwagger
   val cpds = new ComboPooledDataSource
@@ -584,7 +584,7 @@ extends ScalatraWordSpec
           assume(status != 504, "Test gateway timed out")
           status should equal (400)
           val response = parse(body).extract[ErrorModel]
-          response.message shouldEqual "Invalid author JSON:\n" + """{"thing_this_object_is_not":"author","heres_an_integer_cause_why_not":321433}."""
+          response.message shouldEqual "Invalid author JSON:\n" + """{"thing_this_object_is_not":"author","heres_an_integer_cause_why_not":32}."""
         }
       }
     }
