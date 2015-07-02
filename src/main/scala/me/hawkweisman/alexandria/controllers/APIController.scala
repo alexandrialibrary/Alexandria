@@ -176,7 +176,7 @@ extends AlexandriaStack
   }
 
   post("/books/?", operation(createBook)) {
-    val newBook: Future[Book] = Try(parse(params("book")).extract[Book])
+    val newBook: Future[Book] = Try(parse(request.body).extract[Book])
     val query: Future[Book] = newBook flatMap { book =>
       db run (books += book) map { _ => book }
     }
@@ -186,9 +186,9 @@ extends AlexandriaStack
         Created(book)
       } recover {
         case _: NoSuchElementException =>
-          BadRequest(ErrorModel(400, "No book data was sent"))
+          BadRequest(ErrorModel(400, "No body."))
         case why: MappingException =>
-          BadRequest(ErrorModel fromException (400, why))
+          BadRequest(ErrorModel(400, s"Invalid book JSON:\n${request.body}."))
         case why: Throwable =>
           InternalServerError(ErrorModel fromException (500, why))
       }
