@@ -48,6 +48,41 @@ extends ScalatraWordSpec
     ), Duration.Inf)
   }
 
+  def createBooks() = {
+    Await.ready( db run DBIO.seq(
+      books += Book(
+          isbn          = "ISBN:9780980200447",
+          title         = "Slow reading",
+          subtitle      = None,
+          byline        = "John Miedema",
+          pages         = 92,
+          published_date = "March 2009",
+          publisher     = "Litwin Books",
+          weight        = Some("1 grams")
+        ),
+        books += Book(
+          isbn          = "ISBN:0201558025",
+          title         = "Concrete mathematics",
+          subtitle      = Some("a foundation for computer science"),
+          byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik",
+          pages         = 657,
+          published_date = "1994",
+          publisher     = "Addison-Wesley",
+          weight        = None
+        ),
+      books += Book(
+        isbn          = "ISBN:9780201896831",
+        title         = "The Art of Computer Programming, Vol. 1",
+        subtitle      = Some("Fundamental Algorithms"),
+        byline        = "Donald E. Knuth",
+        pages         = 672,
+        published_date = "1997",
+        publisher     = "Addison-Wesley",
+        weight        = Some("2.5 pounds")
+      )
+    ), Duration.Inf)
+  }
+
   "The GET /book/{isbn} route" when {
     "the requested book is not in the database" should {
       "add the book to the database and return it" taggedAs(DbTest, InternetTest) in {
@@ -167,8 +202,14 @@ extends ScalatraWordSpec
     }
     "the requested number of books is less than the number of books in the database" should {
       "return only the requested amount" taggedAs DbTest in {
-        Await.ready(db.run(
-          books += Book(
+        createBooks()
+        get("/books?offset=0&count=2") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (200)
+          val books = parse(body).extract[Seq[Book]]
+          books should have length 2
+          books should contain (
+            Book(
               isbn          = "ISBN:9780980200447",
               title         = "Slow reading",
               subtitle      = None,
@@ -178,9 +219,9 @@ extends ScalatraWordSpec
               publisher     = "Litwin Books",
               weight        = Some("1 grams")
             )
-          ), Duration.Inf)
-          Await.ready(db.run(
-            books += Book(
+          )
+          books should contain (
+            Book(
               isbn          = "ISBN:0201558025",
               title         = "Concrete mathematics",
               subtitle      = Some("a foundation for computer science"),
@@ -190,65 +231,30 @@ extends ScalatraWordSpec
               publisher     = "Addison-Wesley",
               weight        = None
             )
-        ), Duration.Inf)
-        Await.ready(db.run(
-          books += Book(
-            isbn          = "ISBN:9780201896831",
-            title         = "The Art of Computer Programming, Vol. 1",
-            subtitle      = Some("Fundamental Algorithms"),
-            byline        = "Donald E. Knuth",
-            pages         = 672,
-            published_date = "1997",
-            publisher     = "Addison-Wesley",
-            weight        = Some("2.5 pounds")
           )
-      ), Duration.Inf)
-      get("/books?offset=0&count=2") {
-        assume(status != 504, "Test gateway timed out")
-        status should equal (200)
-        val books = parse(body).extract[Seq[Book]]
-        books should have length 2
-        books should contain (
-          Book(
-            isbn          = "ISBN:9780980200447",
-            title         = "Slow reading",
-            subtitle      = None,
-            byline        = "John Miedema",
-            pages         = 92,
-            published_date = "March 2009",
-            publisher     = "Litwin Books",
-            weight        = Some("1 grams")
-          )
-        )
-        books should contain (
-          Book(
-            isbn          = "ISBN:0201558025",
-            title         = "Concrete mathematics",
-            subtitle      = Some("a foundation for computer science"),
-            byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik",
-            pages         = 657,
-            published_date = "1994",
-            publisher     = "Addison-Wesley",
-            weight        = None
-          )
-        )
         }
       }
       "return the requested amount, starting at an offset" taggedAs DbTest in {
-        Await.ready(db.run(
-          books += Book(
-              isbn          = "ISBN:9780980200447",
-              title         = "Slow reading",
-              subtitle      = None,
-              byline        = "John Miedema",
-              pages         = 92,
-              published_date = "March 2009",
-              publisher     = "Litwin Books",
-              weight        = Some("1 grams")
+        createBooks()
+        get("/books?offset=1&count=2") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (200)
+          val books = parse(body).extract[Seq[Book]]
+          books should have length 2
+          books should contain (
+            Book(
+              isbn          = "ISBN:9780201896831",
+              title         = "The Art of Computer Programming, Vol. 1",
+              subtitle      = Some("Fundamental Algorithms"),
+              byline        = "Donald E. Knuth",
+              pages         = 672,
+              published_date = "1997",
+              publisher     = "Addison-Wesley",
+              weight        = Some("2.5 pounds")
             )
-          ), Duration.Inf)
-          Await.ready(db.run(
-            books += Book(
+          )
+          books should contain (
+            Book(
               isbn          = "ISBN:0201558025",
               title         = "Concrete mathematics",
               subtitle      = Some("a foundation for computer science"),
@@ -258,90 +264,13 @@ extends ScalatraWordSpec
               publisher     = "Addison-Wesley",
               weight        = None
             )
-        ), Duration.Inf)
-        Await.ready(db.run(
-          books += Book(
-            isbn          = "ISBN:9780201896831",
-            title         = "The Art of Computer Programming, Vol. 1",
-            subtitle      = Some("Fundamental Algorithms"),
-            byline        = "Donald E. Knuth",
-            pages         = 672,
-            published_date = "1997",
-            publisher     = "Addison-Wesley",
-            weight        = Some("2.5 pounds")
           )
-      ), Duration.Inf)
-      get("/books?offset=1&count=2") {
-        assume(status != 504, "Test gateway timed out")
-        status should equal (200)
-        val books = parse(body).extract[Seq[Book]]
-        books should have length 2
-        books should contain (
-          Book(
-            isbn          = "ISBN:9780201896831",
-            title         = "The Art of Computer Programming, Vol. 1",
-            subtitle      = Some("Fundamental Algorithms"),
-            byline        = "Donald E. Knuth",
-            pages         = 672,
-            published_date = "1997",
-            publisher     = "Addison-Wesley",
-            weight        = Some("2.5 pounds")
-          )
-        )
-        books should contain (
-          Book(
-            isbn          = "ISBN:0201558025",
-            title         = "Concrete mathematics",
-            subtitle      = Some("a foundation for computer science"),
-            byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik",
-            pages         = 657,
-            published_date = "1994",
-            publisher     = "Addison-Wesley",
-            weight        = None
-          )
-        )
         }
       }
     }
     "the requested amount is negative" should {
       "return all the books" taggedAs DbTest in {
-        Await.ready(db.run(
-          books += Book(
-              isbn          = "ISBN:9780980200447",
-              title         = "Slow reading",
-              subtitle      = None,
-              byline        = "John Miedema",
-              pages         = 92,
-              published_date = "March 2009",
-              publisher     = "Litwin Books",
-              weight        = Some("1 grams")
-            )
-          ), Duration.Inf)
-          Await.ready(db.run(
-            books += Book(
-              isbn          = "ISBN:0201558025",
-              title         = "Concrete mathematics",
-              subtitle      = Some("a foundation for computer science"),
-              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik",
-              pages         = 657,
-              published_date = "1994",
-              publisher     = "Addison-Wesley",
-              weight        = None
-            )
-        ), Duration.Inf)
-        Await.ready(db.run(
-          books += Book(
-            isbn          = "ISBN:9780201896831",
-            title         = "The Art of Computer Programming, Vol. 1",
-            subtitle      = Some("Fundamental Algorithms"),
-            byline        = "Donald E. Knuth",
-            pages         = 672,
-            published_date = "1997",
-            publisher     = "Addison-Wesley",
-            weight        = Some("2.5 pounds")
-          )
-      ), Duration.Inf)
-
+        createBooks()
         get("/books?offset=0&count=-1") {
           assume(status != 504, "Test gateway timed out")
           status should equal (200)
@@ -386,42 +315,7 @@ extends ScalatraWordSpec
         }
       }
       "return all the books, starting at an offset" taggedAs DbTest in {
-        Await.ready(db.run(
-          books += Book(
-              isbn          = "ISBN:9780980200447",
-              title         = "Slow reading",
-              subtitle      = None,
-              byline        = "John Miedema",
-              pages         = 92,
-              published_date = "March 2009",
-              publisher     = "Litwin Books",
-              weight        = Some("1 grams")
-            )
-          ), Duration.Inf)
-          Await.ready(db.run(
-            books += Book(
-              isbn          = "ISBN:0201558025",
-              title         = "Concrete mathematics",
-              subtitle      = Some("a foundation for computer science"),
-              byline        = "Ronald L. Graham, Donald E. Knuth, Oren Patashnik",
-              pages         = 657,
-              published_date = "1994",
-              publisher     = "Addison-Wesley",
-              weight        = None
-            )
-        ), Duration.Inf)
-        Await.ready(db.run(
-          books += Book(
-            isbn          = "ISBN:9780201896831",
-            title         = "The Art of Computer Programming, Vol. 1",
-            subtitle      = Some("Fundamental Algorithms"),
-            byline        = "Donald E. Knuth",
-            pages         = 672,
-            published_date = "1997",
-            publisher     = "Addison-Wesley",
-            weight        = Some("2.5 pounds")
-          )
-      ), Duration.Inf)
+        createBooks()
 
         get("/books?offset=1&count=-1") {
           assume(status != 504, "Test gateway timed out")
