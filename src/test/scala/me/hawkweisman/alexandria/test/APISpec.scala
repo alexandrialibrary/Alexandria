@@ -573,8 +573,36 @@ extends ScalatraWordSpec
     }
   }
   "The POST /books/ route" when {
-    "passed a valid Book JSON object" should {
+    "passed a valid Book JSON object for a book not in the database" should {
       "add the book to the database" taggedAs DbTest in {
+        val json = ("isbn" -> "ISBN:9780980200447") ~
+          ("title" -> "Slow reading") ~
+          ("subtitle" -> null) ~
+          ("byline" -> "John Miedema") ~
+          ("pages" -> 92) ~
+          ("publisher" -> "Litwin Books") ~
+          ("published_date" ->  "March 2009") ~
+          ("weight" -> "1 grams")
+
+        postJson("/books/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (201)
+        }
+
+        val bookInDb = Await.result(
+          db run booksByISBN("ISBN:9780980200447").result,
+          Duration.Inf
+          ).headOption.value
+        bookInDb.isbn shouldEqual "ISBN:9780980200447"
+        bookInDb.title shouldEqual "Slow reading"
+        bookInDb.subtitle should not be 'defined
+        bookInDb.byline shouldEqual "John Miedema"
+        bookInDb.pages shouldEqual 92
+        bookInDb.publisher shouldEqual "Litwin Books"
+        bookInDb.published_date shouldEqual "March 2009"
+        bookInDb.weight.value shouldEqual "1 grams"
+      }
+      "return the book" taggedAs DbTest in {
         val json = ("isbn" -> "ISBN:9780980200447") ~
           ("title" -> "Slow reading") ~
           ("subtitle" -> null) ~
@@ -600,19 +628,18 @@ extends ScalatraWordSpec
               weight.value shouldEqual "1 grams"
           }
         }
-
-        val bookInDb = Await.result(
-          db run booksByISBN("ISBN:9780980200447").result,
-          Duration.Inf
-          ).headOption.value
-        bookInDb.isbn shouldEqual "ISBN:9780980200447"
-        bookInDb.title shouldEqual "Slow reading"
-        bookInDb.subtitle should not be 'defined
-        bookInDb.byline shouldEqual "John Miedema"
-        bookInDb.pages shouldEqual 92
-        bookInDb.publisher shouldEqual "Litwin Books"
-        bookInDb.published_date shouldEqual "March 2009"
-        bookInDb.weight.value shouldEqual "1 grams"
+      }
+    }
+    "passed an invalid JSON object" should {
+      val json = ("thing_this_object_is_not" -> "book") ~
+        ("heres_an_integer_cause_why_not" -> 321433)
+      "return Bad Request" in {
+        postJson("/books/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (400)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "Invalid book JSON'."
+        }
       }
     }
   }
