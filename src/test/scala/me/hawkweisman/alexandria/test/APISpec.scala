@@ -588,6 +588,16 @@ extends ScalatraWordSpec
         }
       }
     }
+    "no body is sent" should {
+      "return Bad Request" in {
+        post("/authors/") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (400)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "No body."
+        }
+      }
+    }
   }
   "The GET /author/{name} route" when {
     "the requested author is not in the database" should {
