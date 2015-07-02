@@ -15,6 +15,7 @@ import model.Tables._
 import model.{Author, Book}
 
 import org.json4s._
+import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 import org.scalatest.{Inside, Matchers, OptionValues}
 import org.scalatra.test.scalatest._
@@ -38,6 +39,15 @@ extends ScalatraWordSpec
   val cpds = new ComboPooledDataSource
   val db = Database.forDataSource(cpds)
   addServlet(new APIController(db), "/*")
+
+  def postJson[A](uri: String,
+                  body: JValue,
+                  headers: Map[String, String]=Map()
+                  )(f: => A): A =
+    post(uri,
+      compact(render(body)).getBytes("utf-8"),
+      Map("Content-Type" -> "application/json") ++ headers
+      )(f)
 
   def createAuthors() = {
     Await.ready( db run DBIO.seq(
@@ -559,6 +569,50 @@ extends ScalatraWordSpec
           status should equal (200)
           (parse(body) \\ "name").extract[String] shouldEqual "Donald E. Knuth"
         }
+      }
+    }
+  }
+  "The POST /books/ route" when {
+    "passed a valid Book JSON object" should {
+      "add the book to the database" taggedAs DbTest in {
+        val json = ("isbn" -> "ISBN:9780980200447") ~
+          ("title" -> "Slow reading") ~
+          ("subtitle" -> null) ~
+          ("byline" -> "John Miedema") ~
+          ("pages" -> 92) ~
+          ("publisher" -> "Litwin Books") ~
+          ("published_date" ->  "March 2009") ~
+          ("weight" -> "1 grams")
+
+        postJson("/books/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (201)
+          val parsedBook = parse(body).extract[Book]
+          inside (parsedBook) {
+            case Book(isbn, title,subtitle,byline,pages,published_date,publisher,weight) =>
+              isbn shouldEqual "ISBN:9780980200447"
+              title shouldEqual "Slow reading"
+              subtitle should not be 'defined
+              byline shouldEqual "John Miedema"
+              pages shouldEqual 92
+              publisher shouldEqual "Litwin Books"
+              published_date shouldEqual "March 2009"
+              weight.value shouldEqual "1 grams"
+          }
+        }
+
+        val bookInDb = Await.result(
+          db run booksByISBN("ISBN:9780980200447").result,
+          Duration.Inf
+          ).headOption.value
+        bookInDb.isbn shouldEqual "ISBN:9780980200447"
+        bookInDb.title shouldEqual "Slow reading"
+        bookInDb.subtitle should not be 'defined
+        bookInDb.byline shouldEqual "John Miedema"
+        bookInDb.pages shouldEqual 92
+        bookInDb.publisher shouldEqual "Litwin Books"
+        bookInDb.published_date shouldEqual "March 2009"
+        bookInDb.weight.value shouldEqual "1 grams"
       }
     }
   }
