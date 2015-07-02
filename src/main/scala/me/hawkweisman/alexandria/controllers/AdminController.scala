@@ -13,8 +13,7 @@ import scalate.ScalateSupport
 import slick.driver.H2Driver.api._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Await
+import scala.concurrent.{ ExecutionContext, Await }
 import scala.concurrent.duration._
 
 /**

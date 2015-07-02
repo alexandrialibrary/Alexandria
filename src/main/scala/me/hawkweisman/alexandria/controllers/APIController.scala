@@ -10,7 +10,6 @@ import model.{ ISBN, Book, Author }
 
 import org.scalatra._
 import org.scalatra.json._
-import org.scalatra.FutureSupport
 import org.scalatra.swagger.{ Swagger, SwaggerSupport, StringResponseMessage }
 
 import org.json4s._
