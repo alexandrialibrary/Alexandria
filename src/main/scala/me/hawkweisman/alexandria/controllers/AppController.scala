@@ -10,7 +10,8 @@ import slick.driver.H2Driver.api.Database
  * @author Hawk Weisman
  * @since v0.1.0
  */
-final case class AppController(db: Database) extends AlexandriaStack {
+final case class AppController(db: Database)
+extends AlexandriaStack {
 
   get("/") {
     contentType = "text/html"

@@ -76,14 +76,14 @@ object Tables {
            )
 
   val sortedBooksTitle = Compiled( (offset: ConstColumn[Long]) =>
-      books.sortBy(_.title.asc)
-           .drop(offset)
+     books.sortBy(_.title.replace("The ", "").asc)
+          .drop(offset)
          )
   val sortedBooksTitleCount = Compiled(
     (offset: ConstColumn[Long], count: ConstColumn[Long]) =>
-     books.sortBy(_.title.asc)
-          .drop(offset)
-          .take(count)
+      books.sortBy(_.title.replace("The ", "").asc)
+           .drop(offset)
+           .take(count)
         )
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
@@ -103,7 +103,6 @@ object Tables {
     def deweyDecimals = deweys filter (_.isbn === isbn) map (_.dewey)
     def loanedTo = loans filter (_.isbn === isbn) flatMap (_.who)
     def loanedUntil = loans filter (_.isbn === isbn) map (_.until)
-
   }
 
   class Loans(tag: Tag) extends Table[(Int,String,Date)](tag, "LOANS") {
