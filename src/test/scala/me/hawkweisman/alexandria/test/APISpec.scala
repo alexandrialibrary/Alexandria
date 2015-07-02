@@ -638,7 +638,7 @@ extends ScalatraWordSpec
           assume(status != 504, "Test gateway timed out")
           status should equal (400)
           val response = parse(body).extract[ErrorModel]
-          response.message shouldEqual "Invalid book JSON'."
+          response.message shouldEqual "Invalid book JSON:\n" + """{"thing_this_object_is_not":"book","heres_an_integer_cause_why_not":321433}."""
         }
       }
     }
