@@ -12,3 +12,5 @@ lazy val gitHeadCommitSha = settingKey[String]("current git commit short SHA")
 gitHeadCommitSha in ThisBuild := Process("git rev-parse --short HEAD").lines.head
 
 version in ThisBuild := s"$projVersion-${gitHeadCommitSha.value}"
+
+wartremoverWarnings in (Compile, compile) ++= Warts.all
