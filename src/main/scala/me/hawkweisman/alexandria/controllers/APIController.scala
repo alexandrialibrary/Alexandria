@@ -262,7 +262,28 @@ extends AlexandriaStack
   }
 
   post("/authors/?", operation(createAuthor)) {
-    NotImplemented("This isn't done yet.")
+    val newAuthor: Future[Author] = if (request.body =="")
+      Failure(new NoSuchElementException("Empty body"))
+    else Try(parse(request.body).extract[Author])
+    val query: Future[Author]     = newAuthor flatMap { author =>
+      db run (authors += author) map { _ => author }
+    }
+    new AsyncResult {
+      val is = query map { author => // TODO: what if the book was already in the DB?
+        logger debug s"Added author $author to database"
+        Created(author)
+      } recover {
+        case why: NoSuchElementException =>
+          logger error s"NoSuchElementException while handling POST /authors/\n$why"
+          BadRequest(ErrorModel(400, "No body."))
+        case why: MappingException =>
+          logger error s"MappingException while handling POST /authors/\n$why"
+          BadRequest(ErrorModel(400, s"Invalid author JSON:\n${request.body}."))
+        case why: Throwable =>
+          logger error s"Unexpected error while handling POST /authors/\n$why"
+          InternalServerError(ErrorModel fromException (500, why))
+      }
+    }
   }
 
   get("/author/:name", operation(getAuthorByName)) {

@@ -6,7 +6,7 @@ import java.net.URL
 import com.mchange.v2.c3p0.ComboPooledDataSource
 
 import controllers.APIController
-import controllers.responses.ErrorModel
+import controllers.responses.{ ErrorModel, AuthorSerializer }
 import controllers.swagger.AlexandriaSwagger
 
 import tags.{InternetTest, DbTest}
@@ -15,6 +15,7 @@ import model.Tables._
 import model.{Author, Book}
 
 import org.json4s._
+import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 import org.scalatest.{Inside, Matchers, OptionValues}
 import org.scalatra.test.scalatest._
@@ -32,12 +33,21 @@ extends ScalatraWordSpec
   with OptionValues
   with ClearDB {
 
-  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats + AuthorSerializer
 
   implicit val swagger = new AlexandriaSwagger
   val cpds = new ComboPooledDataSource
   val db = Database.forDataSource(cpds)
   addServlet(new APIController(db), "/*")
+
+  def postJson[A](uri: String,
+                  body: JValue,
+                  headers: Map[String, String]=Map()
+                  )(f: => A): A =
+    post(uri,
+      compact(render(body)).getBytes("utf-8"),
+      Map("Content-Type" -> "application/json") ++ headers
+      )(f)
 
   def createAuthors() = {
     Await.ready( db run DBIO.seq(
@@ -530,6 +540,61 @@ extends ScalatraWordSpec
           status should equal (400)
           val response = parse(body).extract[ErrorModel]
           response.message shouldEqual "Invalid sort-by param 'asdf'."
+        }
+      }
+    }
+  }
+  "The POST /authors/ route" when {
+    "passed a valid Author JSON object for a book not in the database" should {
+      "add the new author to the database" taggedAs DbTest in {
+        val json = ("name" -> "Donald E. Knuth")
+
+        postJson("/authors/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (201)
+        }
+
+        val authorInDb = Await.result(
+          db run authorByName(("Donald", "Knuth")).result,
+          Duration.Inf
+          ).headOption.value
+        authorInDb.getFirstName shouldEqual "Donald"
+        authorInDb.getMiddleName.value shouldEqual "E."
+        authorInDb.getLastName shouldEqual "Knuth"
+      }
+      "return the author" taggedAs DbTest in {
+        val json = ("name" -> "Donald E. Knuth")
+
+        postJson("/authors/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (201)
+
+          val parsedAuthor = parse(body).extract[Author]
+          parsedAuthor.getFirstName shouldEqual "Donald"
+          parsedAuthor.getMiddleName.value shouldEqual "E."
+          parsedAuthor.getLastName shouldEqual "Knuth"
+        }
+      }
+    }
+    "passed an invalid JSON object" should {
+      val json = ("thing_this_object_is_not" -> "author") ~
+        ("heres_an_integer_cause_why_not" -> 32)
+      "return Bad Request" in {
+        postJson("/authors/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (400)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "Invalid author JSON:\n" + """{"thing_this_object_is_not":"author","heres_an_integer_cause_why_not":32}."""
+        }
+      }
+    }
+    "no body is sent" should {
+      "return Bad Request" in {
+        post("/authors/") {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (400)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "No body."
         }
       }
     }
