@@ -31,7 +31,7 @@ import slick.driver.H2Driver.api._
  * @author Hawk Weisman
  * @since v0.1.0
  */
-case class APIController(db: Database)(implicit val swagger: Swagger)
+final case class APIController(db: Database)(implicit val swagger: Swagger)
 extends AlexandriaStack
   with NativeJsonSupport
   with SwaggerSupport

@@ -26,7 +26,8 @@ import scala.concurrent.duration._
  * @author Hawk Weisman
  * @since v0.1.0
  */
-case class AdminController(db: Database) extends AlexandriaStack
+final case class AdminController(db: Database)
+extends AlexandriaStack
   with NativeJsonSupport
   with FutureSupport {
 

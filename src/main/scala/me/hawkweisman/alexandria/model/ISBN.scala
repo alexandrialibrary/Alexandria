@@ -29,7 +29,7 @@ import org.json4s.native.JsonMethods._
  * @author Hawk Weisman
  * @since v0.1.0
  */
-case class ISBN(group: String,pub: String,title: String, prefix: Option[String]) {
+final case class ISBN(group: String,pub: String,title: String, prefix: Option[String]) {
 
   /**
    * The query for looking up the book's data from the OpenLibrary API.

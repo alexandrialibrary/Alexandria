@@ -61,7 +61,7 @@ object Author {
   }
 }
 
-case class User(
+final case class User(
   id: Int,
   getFirstName: String,
   getMiddleName: Option[String],

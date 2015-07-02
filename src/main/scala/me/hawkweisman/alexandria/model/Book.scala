@@ -28,7 +28,7 @@ trait Ownable {
  * @author Hawk Weisman
  * @since v0.1.0
  */
-case class Book(
+final case class Book(
   isbn: String, // ISBNs are unique identifiers for a book in the database
   title: String,
   subtitle: Option[String],
