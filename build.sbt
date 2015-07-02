@@ -13,7 +13,7 @@ gitHeadCommitSha in ThisBuild := Process("git rev-parse --short HEAD").lines.hea
 
 version in ThisBuild := s"$projVersion-${gitHeadCommitSha.value}"
 
-wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.Serializable, Wart.NonUnitStatements, Wart.Throw, Wart.DefaultArguments, Wart.Null, Wart.NoNeedForMonad)
+wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.Any, Wart.Nothing, Wart.Serializable, Wart.NonUnitStatements, Wart.Throw, Wart.DefaultArguments, Wart.NoNeedForMonad)
 
 def genSources(base: File): PathFinder = (base / "target") ** "*.scala"
 
