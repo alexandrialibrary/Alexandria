@@ -156,7 +156,7 @@ extends AlexandriaStack
     // build query
     val query = params get "sort-by" match {
       case Some("title")
-        if count > 0      => sortedBooksTitleCount(count, offset).result
+        if count > 0      => sortedBooksTitleCount((count, offset)).result
       case Some("title")  => sortedBooksTitle(offset).result
       case Some("date")   => ??? // TODO: this requires dates to be parsed as times
       case Some(thing)    => halt(400, ErrorModel(400, s"Invalid sort-by param '$thing'."))
@@ -241,10 +241,10 @@ extends AlexandriaStack
     } getOrElse 10
     val query = params get "sort-by" match {
       case Some("first")
-        if count > 0     => sortedAuthorsFirstCount(count, offset).result
+        if count > 0     => sortedAuthorsFirstCount((count, offset)).result
       case Some("first") => sortedAuthorsFirst(offset).result
       case Some("last")
-        if count > 0     => sortedAuthorsLastCount(count, offset).result
+        if count > 0     => sortedAuthorsLastCount((count, offset)).result
       case Some("last")  => sortedAuthorsLast(offset).result
       case None
         if count > 0     => authors.drop(offset).take(count).result
@@ -270,7 +270,7 @@ extends AlexandriaStack
     val name: Option[Array[String]]  = params.get("name") map { _ split "-" }
     val first = name map { _.head } getOrElse halt(400, "No first name")
     val last  = name map { _.last } getOrElse halt(400, "No last name")
-    val query = db run authorByName(first,last)
+    val query = db run authorByName((first,last))
       .result
       .headOption
     new AsyncResult { val is = query map {
