@@ -505,6 +505,7 @@ extends ScalatraWordSpec
         createBooks()
         postJson("/books/", json) {
           assume(status != 504, "Test gateway timed out")
+          info(body)
           status should equal (422)
           val response = parse(body).extract[ErrorModel]
           response.message shouldEqual "Book 'Slow reading' already exists"
@@ -542,7 +543,6 @@ extends ScalatraWordSpec
         get("/authors/?offset=0&count=2") {
           assume(status != 504, "Test gateway timed out")
           status should equal (200)
-
           //info(body)
           val JArray(authorList) = parse(body)
           val authors = authorList map { value: JValue =>

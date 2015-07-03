@@ -21,6 +21,7 @@ import scala.util.{ Try, Success, Failure }
 
 import slick.driver.H2Driver.api._
 
+import java.sql.SQLException
 /**
  * Main Scalatra API control.
  *
@@ -175,10 +176,11 @@ extends AlexandriaStack
   }
 
   post("/books/?", operation(createBook)) {
-    val newBook: Future[Book] = if (request.body == "")
+    val newBook: Try[Book] = if (request.body == "")
       Failure(new NoSuchElementException("Empty body"))
     else Try(parse(request.body).extract[Book])
-    val query: Future[Book]   = newBook flatMap { book =>
+    val newBookFuture: Future[Book] = newBook
+    val query: Future[Book] = newBookFuture flatMap { book =>
       db run (books += book) map { _ => book }
     }
     new AsyncResult {
@@ -190,6 +192,12 @@ extends AlexandriaStack
           BadRequest(ErrorModel(400, "No body."))
         case why: MappingException =>
           BadRequest(ErrorModel(400, s"Invalid book JSON:\n${request.body}."))
+        case why: SQLException
+          if why.getMessage startsWith "Unique index or primary key violation" =>
+            val title = newBook
+              .map("'" + _.title + "'")
+              .getOrElse("")
+            UnprocessableEntity(ErrorModel(422, s"Book $title already exists"))
         case why: Throwable =>
           InternalServerError(ErrorModel fromException (500, why))
       }
