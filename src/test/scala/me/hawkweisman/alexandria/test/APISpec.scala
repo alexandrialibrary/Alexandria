@@ -710,6 +710,17 @@ extends ScalatraWordSpec
           response.message shouldEqual "Author Donald E. Knuth already exists"
         }
       }
+      "return 422 Unprocessable if the author has no middle name" taggedAs DbTest in {
+        val json = ("name" -> "John Miedema")
+        createAuthors()
+        postJson("/authors/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (422)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "Author John Miedema already exists"
+        }
+      }
+
     }
   }
   "The GET /author/{name} route" when {

@@ -139,6 +139,8 @@ object Tables {
     def books = wrote filter (_.authorID === id) flatMap (_.book)
 
     def fullName = index("FULL_NAME", (firstName, middleName, lastName), unique = true)
+    def firstAndLast // marginally hack-y fix for null equality problem
+      = index("FIRST_LAST", (firstName,lastName), unique = true)
 
   }
 
