@@ -491,6 +491,26 @@ extends ScalatraWordSpec
         }
       }
     }
+    "the new book is already in the database" should {
+      "return 422 Unprocessable" taggedAs DbTest in {
+        val json = ("isbn" -> "ISBN:9780980200447") ~
+          ("title" -> "Slow reading") ~
+          ("subtitle" -> null) ~
+          ("byline" -> "John Miedema") ~
+          ("pages" -> 92) ~
+          ("publisher" -> "Litwin Books") ~
+          ("published_date" ->  "March 2009") ~
+          ("weight" -> "1 grams")
+
+        createBooks()
+        postJson("/books/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (422)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "Book 'Slow reading' already exists"
+        }
+      }
+    }
   }
   "The GET /authors/ route" when {
     "the requested number of authors is greater than the number of authors in the database" should {
@@ -676,6 +696,18 @@ extends ScalatraWordSpec
           status should equal (400)
           val response = parse(body).extract[ErrorModel]
           response.message shouldEqual "No body."
+        }
+      }
+    }
+    "the new author is already in the database" should {
+      "return 422 Unprocessable" taggedAs DbTest in {
+        val json = ("name" -> "John Miedema")
+        createAuthors()
+        postJson("/authors/", json) {
+          assume(status != 504, "Test gateway timed out")
+          status should equal (422)
+          val response = parse(body).extract[ErrorModel]
+          response.message shouldEqual "Author John Miedema already exists"
         }
       }
     }
