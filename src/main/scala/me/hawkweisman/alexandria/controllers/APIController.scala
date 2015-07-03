@@ -272,10 +272,11 @@ extends AlexandriaStack
   }
 
   post("/authors/?", operation(createAuthor)) {
-    val newAuthor: Future[Author] = if (request.body =="")
+    val newAuthor: Try[Author] = if (request.body =="")
       Failure(new NoSuchElementException("Empty body"))
     else Try(parse(request.body).extract[Author])
-    val query: Future[Author]     = newAuthor flatMap { author =>
+    val newAuthorFuture: Future[Author] = newAuthor
+    val query: Future[Author]  = newAuthorFuture flatMap { author =>
       db run (authors += author) map { _ => author }
     }
     new AsyncResult {
@@ -289,6 +290,10 @@ extends AlexandriaStack
         case why: MappingException =>
           logger error s"MappingException while handling POST /authors/\n$why"
           BadRequest(ErrorModel(400, s"Invalid author JSON:\n${request.body}."))
+        case why: SQLException
+          if why.getMessage startsWith "Unique index or primary key violation" =>
+            UnprocessableEntity(ErrorModel(422,
+              s"Author ${newAuthor.getOrElse("")} already exists"))
         case why: Throwable =>
           logger error s"Unexpected error while handling POST /authors/\n$why"
           InternalServerError(ErrorModel fromException (500, why))

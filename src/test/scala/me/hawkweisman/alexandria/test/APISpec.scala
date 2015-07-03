@@ -701,13 +701,13 @@ extends ScalatraWordSpec
     }
     "the new author is already in the database" should {
       "return 422 Unprocessable" taggedAs DbTest in {
-        val json = ("name" -> "John Miedema")
+        val json = ("name" -> "Donald E. Knuth")
         createAuthors()
         postJson("/authors/", json) {
           assume(status != 504, "Test gateway timed out")
           status should equal (422)
           val response = parse(body).extract[ErrorModel]
-          response.message shouldEqual "Author John Miedema already exists"
+          response.message shouldEqual "Author Donald E. Knuth already exists"
         }
       }
     }
