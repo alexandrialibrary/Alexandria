@@ -28,13 +28,13 @@ after_success:
 - ./sbt ++$TRAVIS_SCALA_VERSION codacyCoverage
 before_deploy:
   - export RELEASE_WEBARCHIVE=$(ls target/scala-2.11/*.war)
-  - echo "deploying $RELEASE_PKG_FILE to GitHub releases"
+  - echo "deploying $RELEASE_WEBARCHIVE to GitHub releases"
 deploy:
   provider: releases
   api_key:
     secure: r80O0Ijtw+OJDOl91KixXZM0DSdz7ay4U575nAuWEQmXAyycilViSVxsrXUNfeFrC2iykkJJHTpvDM550P93qunjeHzVhmtbW66xHvMVnNJZygCwE0WFV32ue1szw2rKvZJocYh7xBXb/2Ve6aEHAkbEpp0PXSzp3vlocQnYeaZm2hHjwIDQOCZYvdytnP6TuRS5w3/eUibr/fKyMb68XhXvk7u5FTUZs9kUrI8kd2rRMB3EWAnefZvYDThOOxHcg5Z41LI8YHR/vQJxrP4CIM7OC1qTHesGPqOqDu4BDvc2dspy3WLjiuAeaZkLwW/4hhqFFY10oKItakKxesasgB1bfaE4lTtjib+jJA36pBFRo70eIaT+lDXacdUm8I2ZlRrxVDLiWp44Nb4Hre49FAHDibB/YHead8qkf52KaLvGnkBfqsIi0tS5HEhGqh4ZBqtdK7iiJcJPpNNW0k0CoBS99hzq1LFvoxNnNOOwCPSNvIEybEkhSAHy97Ue7kGaTwqQwkLzDY5fiSghhLz6vqVeVGtJ43cQGJj3tzmiDEzwYmoXfdApv/zr+rq9f63sjkqbyRKTCJUoqj3r/Z9ATCKBn8Lel4HoN6s68I0384hzHqUPKI2mpUd450QxG4gn0UPKh7YJJbr+OxnfSoRRuqkKmeuDRM7qJtA7m00vHJw=
   file_glob: true
-  file: "${RELEASE_PKG_FILE}"
+  file: "${RELEASE_WEBARCHIVE}"
   on:
     repo: alexandrialibrary/Alexandria
     tags: true
