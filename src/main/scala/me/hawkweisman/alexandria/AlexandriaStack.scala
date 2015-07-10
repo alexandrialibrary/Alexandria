@@ -14,7 +14,8 @@ import collection.mutable
 
 import slick.driver.H2Driver.api._
 
-trait AlexandriaStack extends ScalatraServlet
+trait AlexandriaStack
+extends ScalatraServlet
   with ScalateSupport
   with LazyLogging {
 
