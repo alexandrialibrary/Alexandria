@@ -18,10 +18,12 @@ object Tables {
   val authors = TableQuery[Authors]
   val wrote   = TableQuery[Wrote]
   val deweys  = TableQuery[DeweyDecimals]
+  val auth    = TableQuery[Auth]
 
   /** DBIO Action which creates the schema */
   val createSchemaAction = (
-    books.schema ++ loans.schema ++ users.schema ++ authors.schema ++ wrote.schema
+    books.schema ++ loans.schema ++ users.schema ++
+    authors.schema ++ wrote.schema ++ auth.schema
   ).create
 
   /** DBIO Action which DESTROYS FUCKING EVERYTHING */
@@ -31,7 +33,8 @@ object Tables {
     loans.schema.drop,
     books.schema.drop,
     users.schema.drop,
-    authors.schema.drop)
+    authors.schema.drop,
+    auth.schema.drop)
 
   //TODO: AUTH table for password hashes
 
@@ -114,6 +117,15 @@ object Tables {
     def who  = foreignKey("USER_FK", userID, users)(u => u.id)
 
     def * = (userID,isbn,until)
+  }
+  class Auth(tag: Tag) extends Table[(Int,String,String)](tag, "AUTH") {
+    def id        = column[Int]("ID", O.PrimaryKey)
+    def passHash  = column[String]("HASH")
+    def salt      = column[String]("SALT")
+
+    def user = foreignKey("USER_FK", id, users)(u => u.id)
+
+    def *         = (id,passHash,salt)
   }
 
   class Users(tag: Tag) extends Table[User](tag, "USERS") {
