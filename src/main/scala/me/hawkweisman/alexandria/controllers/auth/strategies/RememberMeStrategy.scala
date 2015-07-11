@@ -1,4 +1,5 @@
-package me.hawkweisman.alexandria.controllers
+package me.hawkweisman.alexandria
+package controllers
 package auth
 package strategies
 
