@@ -88,6 +88,13 @@ object Tables {
            .drop(offset)
            .take(count)
         )
+
+  val authFromUsername = for {
+    name    <- Parameters[String]
+    user    <- users if user.userName === name
+    authRow <- auth if authRow.id === user.id
+  } yield authRow
+
   class Books(tag: Tag) extends Table[Book](tag, "BOOKS"){
 
     def isbn      = column[String]("ISBN", O.PrimaryKey)
