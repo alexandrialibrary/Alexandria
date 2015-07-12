@@ -11,6 +11,8 @@ Currently, code in the file `alexandria-app.coffee` will be compiled into the `a
 
 All scripts in `js/` are compiled and minified into the `scripts.js` file, which will include all the scripts that will be used by both the main app and the admin app. All stylesheets are compiled and minified into `styles.css`, which should be used the same.
 
+To have the WRO4j automatically compile web-app sources when you make changes, use the SBT command `~wro4j`. The `~` indicates that SBT should watch the source directory and re-run the `wro4j` command when the sources change. WRO4J will automatically be run when `compile` is invoked, as well.
+
 
 ### Templates
 
