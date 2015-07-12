@@ -6,8 +6,8 @@ import scala.util.{ Try, Success, Failure }
 
 import dispatch._, Defaults._
 
-import me.hawkweisman.util.collection.RepeatableSeq
-import me.hawkweisman.util.concurrent.tryToFuture
+import me.hawkweisman.collection.RepeatableSeq
+import me.hawkweisman.concurrent.tryToFuture
 
 import org.json4s.JsonAST.JValue
 import org.json4s.native.JsonMethods._

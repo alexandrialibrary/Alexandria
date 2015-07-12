@@ -1,8 +1,8 @@
 package me.hawkweisman.alexandria
 package controllers
 
-import me.hawkweisman.util.RichException.makeRich
-import me.hawkweisman.util.concurrent.tryToFuture
+import me.hawkweisman.util.RichException
+import me.hawkweisman.concurrent.tryToFuture
 
 import responses.{ ModelResponseMessage, ErrorModel, BookSerializer, AuthorSerializer }
 import model.Tables._
@@ -39,7 +39,8 @@ extends AlexandriaStack
 
   protected implicit def executor: ExecutionContext = global
   // Sets up automatic case class to JSON output serialization
-  protected implicit lazy val jsonFormats: Formats = DefaultFormats + BookSerializer + AuthorSerializer
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats +
+    BookSerializer + AuthorSerializer
 
   // "description" string for Swagger
   override protected val applicationName: Option[String] = Some("Books")
