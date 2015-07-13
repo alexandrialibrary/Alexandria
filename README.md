@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/alexandrialibrary/Alexandria](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alexandrialibrary/Alexandria?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Build Status](https://travis-ci.org/alexandrialibrary/Alexandria.svg)](https://travis-ci.org/alexandrialibrary/Alexandria)
-[![Codacy Badge](https://www.codacy.com/project/badge/7d389630f7064bd58f892927a40e1242)](https://www.codacy.com/app/hawk/Alexandria)
+[![Codacy Badge](https://www.codacy.com/project/badge/4d04c3b524bd49cd869595af2ffbb9eb)](https://www.codacy.com/app/alexandria/Alexandria)
 [![Coverage](https://img.shields.io/codecov/c/github/alexandrialibrary/Alexandria/master.svg)]()
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
 [![GitHub release](https://img.shields.io/github/tag/alexandrialibrary/Alexandria.svg)]()
