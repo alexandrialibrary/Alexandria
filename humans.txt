@@ -3,6 +3,11 @@
 	Contact: harry@redbassett.com
 	Twitter: @redbassett
 	From: Maine, USA
+	
+	Lead Backend Developer: Hawk Weisman
+	Contact: hi@hawkweisman.me
+	Twitter: @FakeHawkWeisman
+	From: Pennsylvania, USA
 
 /* THANKS */
 
