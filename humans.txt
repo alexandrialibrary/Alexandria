@@ -1,0 +1,12 @@
+/* TEAM */
+	Lead Frontend Developer: Harry Grillo
+	Contact: harry@redbassett.com
+	Twitter: @redbassett
+	From: Maine, USA
+
+/* THANKS */
+
+
+/* SITE */
+	Language: English
+	Doctype: HTML5
