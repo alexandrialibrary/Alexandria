@@ -15,3 +15,4 @@
 /* SITE */
 	Language: English
 	Doctype: HTML5
+	Software: IntelliJ IDEA, Atom, SublimeText, sbt
