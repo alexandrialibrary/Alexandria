@@ -29,6 +29,10 @@ Similarly, we ask that all CoffeeScript code contributed to Alexandria conform t
 
 Ideally, all pull requests should add complete unit tests for all code added. Codacy also tracks test coverage for all branches and pull requests. We prefer to not merge any pull requests that decreases the overall coverage score for the project, although exceptions may be made in some situations. We use [codecov.io](https://codecov.io/github/alexandrialibrary/Alexandria) to track test test coverage for all commits and pull requests. For a pull request to be merged, we require that the _patch coverage_ (the number of added lines covered by tests) of that pull request to be greater than 90%.
 
+Contributor License Agreement and Code of Conduct
+-------------------------------------------------
+
+By commiting source code or contributing other materials to the Alexandria Project, you agree to Alexandria's [Contributor License Agreement](doc/CLA.md) (CLA) and [Code of Conduct](doc/code_of_conduct.md).
 
 Communicating with Alexandria's Maintainers
 -------------------------------------------
